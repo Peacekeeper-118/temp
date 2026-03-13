@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Revendre | Social Thrift</title>
+    
+    <!-- Polyfill for process.env (Must be strictly first) -->
+    <script>
+      window.process = window.process || {
+        env: {
+          NODE_ENV: 'development',
+          API_KEY: '', 
+          FIREBASE_API_KEY: 'mock-key'
+        }
+      };
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Righteous&display=swap" rel="stylesheet">
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['DM Sans', 'sans-serif'],
+              display: ['Outfit', 'sans-serif'],
+              logo: ['"Righteous"', 'sans-serif'],
+            },
+            colors: {
+              earth: {
+                50: '#FAFAF9',
+                100: '#F5F5F4',
+                200: '#E7E5E4',
+                300: '#D6D3D1',
+                400: '#A8A29E',
+                500: '#78716C',
+                600: '#57534E',
+                700: '#44403C',
+                800: '#292524',
+                900: '#1C1917',
+              },
+              brand: {
+                50: '#F0F9FF',
+                100: '#E0F2FE',
+                200: '#BAE6FD',
+                300: '#7DD3FC',
+                400: '#38BDF8',
+                500: '#0EA5E9', 
+                600: '#0284C7',
+                700: '#0369A1',
+                800: '#075985',
+                900: '#0C4A6E',
+              },
+              pop: {
+                pink: '#FF6B6B',
+                rose: '#FF8787',
+                cyan: '#4ECDC4',
+                lime: '#C7F464',
+                yellow: '#FFE66D',
+                orange: '#FF9F1C',
+                purple: '#9D4EDD'
+              }
+            },
+            animation: {
+              'bounce-in': 'bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+              'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'pop': 'pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+              'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+              'float': 'float 3s ease-in-out infinite',
+              'pulse-soft': 'pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'blob': 'blob 7s infinite',
+            },
+            keyframes: {
+              bounceIn: {
+                '0%': { opacity: '0', transform: 'scale(0.8)' },
+                '80%': { transform: 'scale(1.05)' },
+                '100%': { opacity: '1', transform: 'scale(1)' },
+              },
+              fadeInUp: {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              pop: {
+                '0%': { transform: 'scale(0.95)' },
+                '50%': { transform: 'scale(1.1)' },
+                '100%': { transform: 'scale(1)' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(100%)' },
+                '100%': { transform: 'translateY(0)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' },
+              },
+              pulseSoft: {
+                '0%, 100%': { opacity: '1' },
+                '50%': { opacity: '0.7' },
+              },
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #F8F8F7;
+        -webkit-tap-highlight-color: transparent;
+      }
+      ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: linear-gradient(135deg, #0EA5E9, #4ECDC4);
+      }
+    </style>
+    
+  <!-- Firebase Compat Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
+
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "lucide-react": "https://esm.sh/lucide-react@0.460.0?external=react",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "path": "https://esm.sh/path@^0.12.7",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <div id="error-root" style="color: red; padding: 20px; font-family: sans-serif; display: none;"></div>
+    
+    <script>
+      window.addEventListener('error', function(event) {
+        const errorRoot = document.getElementById('error-root');
+        if (errorRoot) {
+          errorRoot.style.display = 'block';
+          errorRoot.innerText = "Application Error: " + (event.message || "Unknown error");
+        }
+      });
+    </script>
+    <script type="module" src="./index.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "history": {
+    "enabled": true,
+    "file": "history.txt",
+    "append": true,
+    "autoLoad": true
+  },
+
+  "tools": {
+    "file": true,
+    "shell": true
+  },
+
+  "agents": {
+    "memory": true
+  }
+}
