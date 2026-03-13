@@ -439,6 +439,8 @@ const PlaceholderView = ({ title, onBack }: { title: string, onBack: () => void 
 );
 
 const HelpSupportView = ({ onBack }: { onBack: () => void }) => {
+  const [activeHelpView, setActiveHelpView] = useState<'menu' | 'blocked' | 'report-user' | 'report-product' | 'contact'>('menu');
+
   const supportItems = [
     {
       id: 'blocked',
@@ -474,6 +476,145 @@ const HelpSupportView = ({ onBack }: { onBack: () => void }) => {
     }
   ];
 
+  if (activeHelpView === 'blocked') {
+    return (
+      <div className="min-h-screen bg-white animate-fade-in flex flex-col">
+        <div className="px-6 py-6 flex items-center justify-between border-b border-earth-50">
+          <button onClick={() => setActiveHelpView('menu')} className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors">
+            <ArrowLeft className="w-6 h-6 text-earth-900" />
+          </button>
+          <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 text-center">Blocked Users</h1>
+          <div className="w-10"></div>
+        </div>
+        <div className="flex-1 px-6 py-8 flex flex-col items-center justify-center text-center space-y-4">
+          <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center">
+            <UserX className="w-10 h-10 text-rose-400" />
+          </div>
+          <h2 className="text-xl font-display font-black text-earth-900">No Blocked Users</h2>
+          <p className="text-earth-400 font-medium max-w-[240px]">
+            You haven't blocked anyone yet. Blocked users will appear here.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (activeHelpView === 'report-user') {
+    return (
+      <div className="min-h-screen bg-white animate-fade-in flex flex-col">
+        <div className="px-6 py-6 flex items-center justify-between border-b border-earth-50">
+          <button onClick={() => setActiveHelpView('menu')} className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors">
+            <ArrowLeft className="w-6 h-6 text-earth-900" />
+          </button>
+          <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 text-center">Report User</h1>
+          <div className="w-10"></div>
+        </div>
+        <div className="px-6 py-8 space-y-6">
+          <div className="space-y-2">
+            <label className="text-sm font-black text-earth-900 uppercase tracking-wider">Username or User ID</label>
+            <input className="w-full bg-[#F5F5F5] px-6 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none" placeholder="@username" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-black text-earth-900 uppercase tracking-wider">Reason for reporting</label>
+            <select className="w-full bg-[#F5F5F5] px-6 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none appearance-none">
+              <option>Spam or scam</option>
+              <option>Harassment or hate speech</option>
+              <option>Inappropriate content</option>
+              <option>Counterfeit items</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-black text-earth-900 uppercase tracking-wider">Details</label>
+            <textarea rows={4} className="w-full bg-[#F5F5F5] px-6 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none resize-none" placeholder="Please describe the issue..." />
+          </div>
+          <button className="w-full py-5 bg-earth-900 text-white font-black rounded-full hover:bg-black transition-colors">Submit Report</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (activeHelpView === 'report-product') {
+    return (
+      <div className="min-h-screen bg-white animate-fade-in flex flex-col">
+        <div className="px-6 py-6 flex items-center justify-between border-b border-earth-50">
+          <button onClick={() => setActiveHelpView('menu')} className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors">
+            <ArrowLeft className="w-6 h-6 text-earth-900" />
+          </button>
+          <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 text-center">Report Product</h1>
+          <div className="w-10"></div>
+        </div>
+        <div className="px-6 py-8 space-y-6">
+          <div className="space-y-2">
+            <label className="text-sm font-black text-earth-900 uppercase tracking-wider">Product Link or ID</label>
+            <input className="w-full bg-[#F5F5F5] px-6 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none" placeholder="e.g. #123456" />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-black text-earth-900 uppercase tracking-wider">Issue category</label>
+            <select className="w-full bg-[#F5F5F5] px-6 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none appearance-none">
+              <option>Counterfeit or fake</option>
+              <option>Prohibited item</option>
+              <option>Misleading description</option>
+              <option>Inappropriate images</option>
+              <option>Copyright infringement</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-black text-earth-900 uppercase tracking-wider">Details</label>
+            <textarea rows={4} className="w-full bg-[#F5F5F5] px-6 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none resize-none" placeholder="Tell us more about the problem..." />
+          </div>
+          <button className="w-full py-5 bg-earth-900 text-white font-black rounded-full hover:bg-black transition-colors">Submit Report</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (activeHelpView === 'contact') {
+    return (
+      <div className="min-h-screen bg-white animate-fade-in flex flex-col">
+        <div className="px-6 py-6 flex items-center justify-between border-b border-earth-50">
+          <button onClick={() => setActiveHelpView('menu')} className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors">
+            <ArrowLeft className="w-6 h-6 text-earth-900" />
+          </button>
+          <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 text-center">Contact Us</h1>
+          <div className="w-10"></div>
+        </div>
+        <div className="px-6 py-8 space-y-4">
+          <button className="w-full bg-blue-50 p-6 rounded-[2rem] flex items-center gap-6 group">
+            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+              <MessageSquare className="w-7 h-7 text-blue-500" />
+            </div>
+            <div className="flex-1 text-left">
+              <h3 className="font-display font-black text-lg text-earth-900">Live Chat</h3>
+              <p className="text-xs font-black text-earth-400">Average response time: 2 mins</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-earth-900" />
+          </button>
+          <button className="w-full bg-purple-50 p-6 rounded-[2rem] flex items-center gap-6 group">
+            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+              <Phone className="w-7 h-7 text-purple-500" />
+            </div>
+            <div className="flex-1 text-left">
+              <h3 className="font-display font-black text-lg text-earth-900">Callback</h3>
+              <p className="text-xs font-black text-earth-400">We'll call you within 15 mins</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-earth-900" />
+          </button>
+          <button className="w-full bg-cyan-50 p-6 rounded-[2rem] flex items-center gap-6 group">
+            <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+              <Package className="w-7 h-7 text-cyan-500" />
+            </div>
+            <div className="flex-1 text-left">
+              <h3 className="font-display font-black text-lg text-earth-900">Order Issues</h3>
+              <p className="text-xs font-black text-earth-400">Resolution for specific orders</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-earth-900" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
       {/* Header */}
@@ -492,7 +633,7 @@ const HelpSupportView = ({ onBack }: { onBack: () => void }) => {
         {supportItems.map((item) => (
           <button 
             key={item.id}
-            onClick={() => console.log(`Navigating to ${item.id}`)}
+            onClick={() => setActiveHelpView(item.id as any)}
             className="w-full text-left bg-[#F9F9F9] p-6 rounded-[2rem] flex items-center gap-6 group hover:bg-earth-50 transition-all active:scale-[0.98]"
           >
             <div className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center shrink-0`}>
