@@ -668,19 +668,64 @@ const RefreshHubView = ({ onBack }: { onBack: () => void }) => {
         </button>
       </div>
       <div className="flex-1 px-6 py-8 pb-20 overflow-y-auto">
-        <div className="space-y-6">
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Our Verification Process</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">We verify every item to ensure quality and authenticity. Our expert team checks condition, functionality, and material composition.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Sanitization Standards</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Every item is professionally sanitized using eco-friendly methods to meet the highest hygiene standards before it reaches you.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Expert Packing</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">We use sustainable packaging materials and professional packing techniques to ensure your items arrive in perfect condition.</p>
-          </section>
+        {/* Centered Icon Section */}
+        <div className="text-center mb-8">
+          <div className="w-24 h-24 bg-blue-50 rounded-[2rem] flex items-center justify-center shadow-lg mb-4 mx-auto">
+            <ShieldCheck className="w-12 h-12 text-blue-500" />
+          </div>
+          <p className="text-sm font-bold text-earth-600">
+            "Learn how we verify, sanitize, and pack every item for you."
+          </p>
+        </div>
+
+        {/* Highlight Card */}
+        <div className="bg-blue-50 p-6 rounded-[2rem] mb-8 border border-blue-100">
+          <h3 className="font-display font-black text-lg text-earth-900 mb-2">Quality & Authenticity</h3>
+          <p className="text-sm font-medium text-earth-600 leading-relaxed">
+            Every item sold on Revendre goes through our specialized Refresh Hub. We don't just ship items; we curate them.
+          </p>
+        </div>
+
+        {/* Process Steps */}
+        <div className="space-y-4">
+          {/* Step 1: Multi-Point Inspection */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <Activity className="w-6 h-6 text-blue-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Multi-Point Inspection</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                We verify every item to ensure quality and authenticity. Our expert team checks condition, functionality, and material composition.
+              </p>
+            </div>
+          </div>
+
+          {/* Step 2: Professional Refresh */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <Sparkles className="w-6 h-6 text-green-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Professional Refresh</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                Every item is professionally sanitized using eco-friendly methods to meet the highest hygiene standards before it reaches you.
+              </p>
+            </div>
+          </div>
+
+          {/* Step 3: Expert Packing */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <Package className="w-6 h-6 text-purple-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Expert Packing</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                We use sustainable packaging materials and professional packing techniques to ensure your items arrive in perfect condition.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <div className="px-6 py-6 border-t border-earth-50 text-center space-y-1">
@@ -702,25 +747,69 @@ const BuyingView = ({ onBack }: { onBack: () => void }) => {
         <button onClick={onBack} className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors">
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
-        <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2">Buying Guide</h1>
+        <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2">Buying on Revendre</h1>
         <button onClick={onBack} className="p-2 -mr-2 hover:bg-earth-50 rounded-full transition-colors">
           <X className="w-6 h-6 text-earth-900" />
         </button>
       </div>
       <div className="flex-1 px-6 py-8 pb-20 overflow-y-auto">
-        <div className="space-y-6">
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Safe Payments</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">We offer secure payment methods including credit cards, debit cards, and digital wallets. Your financial information is encrypted and protected.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Escrow Protection</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Your payment is held in escrow until you receive and confirm the item. This ensures both buyer and seller security throughout the transaction.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Buyer Safety Guidelines</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Always communicate through Revendre, check item photos carefully, read seller reviews, and verify item condition upon receipt.</p>
-          </section>
+        {/* Centered Icon Section */}
+        <div className="text-center mb-8">
+          <div className="w-24 h-24 bg-green-50 rounded-[2rem] flex items-center justify-center shadow-lg mb-4 mx-auto">
+            <ShoppingCart className="w-12 h-12 text-green-500" />
+          </div>
+          <p className="text-sm font-bold text-earth-600">
+            "Safe payments, escrow system, and delivery timelines."
+          </p>
+        </div>
+
+        {/* Introduction Paragraph */}
+        <div className="mb-8">
+          <p className="text-sm font-medium text-earth-600 leading-relaxed text-center">
+            Shopping for pre-loved fashion should be as reliable as buying new. Here's how we protect your purchase:
+          </p>
+        </div>
+
+        {/* Feature Cards */}
+        <div className="space-y-4">
+          {/* Card 1: Secure Escrow */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <ShieldCheck className="w-6 h-6 text-green-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Secure Escrow</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                Your money is held safely by Revendre and only released to the seller after you receive the item.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Buyer Protection */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <UserCheck className="w-6 h-6 text-blue-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Buyer Protection</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                Full refund if the item is counterfeit or significantly different from the description.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: Eco-Packaging */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <Package className="w-6 h-6 text-purple-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Eco-Packaging</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                All items are delivered in our signature sustainable, plastic-free packaging.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <div className="px-6 py-6 border-t border-earth-50 text-center space-y-1">
@@ -748,19 +837,56 @@ const SellingView = ({ onBack }: { onBack: () => void }) => {
         </button>
       </div>
       <div className="flex-1 px-6 py-8 pb-20 overflow-y-auto">
-        <div className="space-y-6">
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">How to List Items</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Upload clear photos, write accurate descriptions, set fair prices, and include relevant details about condition and brand. You can list multiple items quickly.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Selling Rules</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Only sell authentic items in good condition. Prohibited items include weapons, counterfeit goods, and hazardous materials. Violating rules may result in account suspension.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Payout Schedule</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Payouts are processed within 48-72 hours after buyer confirmation. Your earnings are deposited to your registered bank account or digital wallet.</p>
-          </section>
+        {/* Centered Icon Section */}
+        <div className="text-center mb-8">
+          <div className="w-24 h-24 bg-amber-50 rounded-[2rem] flex items-center justify-center shadow-lg mb-4 mx-auto">
+            <ShoppingCart className="w-12 h-12 text-amber-500" />
+          </div>
+          <p className="text-sm font-bold text-earth-600">
+            "How to list your fits and when you get paid."
+          </p>
+        </div>
+
+        {/* Informational Cards */}
+        <div className="space-y-4">
+          {/* Card 1: Turn your closet into cash (highlighted) */}
+          <div className="bg-amber-50 p-6 rounded-[2rem] flex items-start gap-4 border border-amber-100">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <Sparkles className="w-6 h-6 text-amber-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Turn your closet into cash</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                We handle the logistics so you can focus on the style. Listing takes less than 60 seconds.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: When do I get paid? */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <DollarSign className="w-6 h-6 text-green-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">When do I get paid?</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                Payouts are processed 24 hours after the buyer receives and accepts the item. Funds will appear in your Revendre Wallet.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: What is the commission? */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <FileText className="w-6 h-6 text-blue-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">What is the commission?</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                We charge a flat 15% fee which covers pickup, sanitization, authentication, and platform costs.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <div className="px-6 py-6 border-t border-earth-50 text-center space-y-1">
@@ -788,19 +914,43 @@ const ShippingView = ({ onBack }: { onBack: () => void }) => {
         </button>
       </div>
       <div className="flex-1 px-6 py-8 pb-20 overflow-y-auto">
-        <div className="space-y-6">
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Delivery Timelines</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Standard delivery takes 3-5 business days across major cities in India. Express delivery is available for selected locations within 24-48 hours.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">Order Tracking</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Track your orders in real-time through the app. You'll receive updates at each stage: packed, dispatched, out for delivery, and delivered.</p>
-          </section>
-          <section>
-            <h2 className="font-display font-black text-xl text-earth-900 mb-3">7-Day Return Policy</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">If the item doesn't match the description or is damaged, you can initiate a return within 7 days of delivery. Returns are free and hassle-free.</p>
-          </section>
+        {/* Centered Icon Section */}
+        <div className="text-center mb-8">
+          <div className="w-24 h-24 bg-purple-50 rounded-[2rem] flex items-center justify-center shadow-lg mb-4 mx-auto">
+            <Truck className="w-12 h-12 text-purple-500" />
+          </div>
+          <p className="text-sm font-bold text-earth-600">
+            "Our 7-day return policy and tracking information."
+          </p>
+        </div>
+
+        {/* Informational Cards */}
+        <div className="space-y-4">
+          {/* Card 1: 7-Day Return Policy */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <Package className="w-6 h-6 text-red-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">7-Day Return Policy</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                Items can be returned if they don't match the listing description or have undisclosed damage.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Nationwide Delivery */}
+          <div className="bg-[#F9F9F9] p-6 rounded-[2rem] flex items-start gap-4">
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0">
+              <MapPin className="w-6 h-6 text-green-500" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-black text-lg text-earth-900 mb-2">Nationwide Delivery</h3>
+              <p className="text-sm font-medium text-earth-600 leading-relaxed">
+                We deliver across India. Typically, items reach buyers within 5–7 business days after pickup.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <div className="px-6 py-6 border-t border-earth-50 text-center space-y-1">
@@ -829,118 +979,213 @@ const PrivacyPolicyDetailView = ({ onBack }: { onBack: () => void }) => {
           <X className="w-6 h-6 text-earth-900" />
         </button>
       </div>
+
       <div className="flex-1 px-6 py-8 pb-20 overflow-y-auto">
         <div className="space-y-8">
           <section>
             <h2 className="font-display font-black text-2xl text-earth-900 mb-4">Privacy Policy</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Effective Date: January 1, 2026</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-4">Effective Date: [Insert Launch Date]</p>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              This Privacy Policy explains how Revendre, operated by Touchnova LLP, collects, uses, stores, and protects personal information when users access or use the Revendre mobile application ("Platform"). By using the Revendre platform, you consent to the collection and use of your information as described in this Privacy Policy.
+            </p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">1. Company Information</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Revendre Marketplace Pvt Ltd. ("Company," "we," "us," or "our") operates the Revendre platform, a marketplace for buying and selling pre-loved items. This Privacy Policy outlines how we collect, use, disclose, and safeguard your information when you visit our mobile application and engage with our services.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre is operated by Touchnova LLP.</p>
+            <div className="text-earth-600 text-sm leading-relaxed mb-4">
+              <p className="font-bold">Registered Office:</p>
+              <p>3-299, Greamspet</p>
+              <p>Chittoor, Andhra Pradesh - 517002</p>
+              <p>India</p>
+            </div>
+            <div className="text-earth-600 text-sm leading-relaxed mb-4">
+              <p className="font-bold">Operational Office:</p>
+              <p>Chennai, Tamil Nadu, India</p>
+            </div>
+            <p className="text-earth-600 text-sm leading-relaxed"><strong>Email:</strong> teamrevendre@gmail.com</p>
+            <p className="text-earth-600 text-sm leading-relaxed"><strong>Phone:</strong> +91 8317696536</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">2. Information We Collect</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2"><strong>Personal Information:</strong> When you register an account, we collect your name, email address, phone number, date of birth, profile photo, and bio. When you make a purchase or list an item for sale, we also collect payment and bank account information necessary to process transactions.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2"><strong>Address Information:</strong> We collect your residential and shipping addresses to facilitate order delivery and validate user location.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2"><strong>Device Information:</strong> We automatically collect device identifiers, operating system type, app version, and mobile network information to improve app performance and security.</p>
-            <p className="text-earth-600 text-sm leading-relaxed"><strong>Usage Data:</strong> We track pages viewed, items clicked, searches performed, time spent on the app, and interaction patterns to enhance user experience.</p>
+            <div className="space-y-4 text-earth-600 text-sm leading-relaxed">
+              <div>
+                <p className="font-bold mb-1">Personal Information:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Full name</li>
+                  <li>Email address</li>
+                  <li>Phone number</li>
+                  <li>Delivery and pickup address</li>
+                  <li>Account login credentials</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-bold mb-1">Transaction Information:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Product listings and images uploaded by users</li>
+                  <li>Order history</li>
+                  <li>Purchase and payment details</li>
+                  <li>Seller payout details (if applicable)</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-bold mb-1">Device and Technical Information:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Device type and operating system</li>
+                  <li>IP address</li>
+                  <li>App usage information</li>
+                  <li>Log data and crash reports</li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-bold mb-1">Logistics Information:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Pickup and delivery locations</li>
+                  <li>Order tracking information</li>
+                  <li>Courier or logistics partner updates</li>
+                </ul>
+              </div>
+            </div>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">3. How We Use Your Information</h3>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• To create and maintain your account and provide access to platform features</li>
-              <li>• To process transactions, verify seller authenticity, and ensure buyer safety</li>
-              <li>• To send transactional notifications about orders, payments, and shipments</li>
-              <li>• To prevent fraud, detect unauthorized access, and maintain platform security</li>
-              <li>• To personalize your experience and show relevant item recommendations</li>
-              <li>• To conduct customer service, respond to inquiries, and resolve disputes</li>
-              <li>• To improve our services through analytics and user behavior analysis</li>
-              <li>• To comply with legal obligations and government requests</li>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre uses collected information to:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc">
+              <li>Create and manage user accounts</li>
+              <li>Process transactions and payments</li>
+              <li>Coordinate clothing pickup and delivery</li>
+              <li>Verify seller listings and product authenticity</li>
+              <li>Provide customer support</li>
+              <li>Prevent fraud and unauthorized activity</li>
+              <li>Improve platform functionality and user experience</li>
+              <li>Comply with legal and regulatory requirements</li>
             </ul>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">4. Listing Images and Uploaded Content</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Images and descriptions uploaded by sellers become part of public listings visible to all users. We may use these images for moderation, quality assurance, and to train our verification systems. By uploading content, you grant Revendre a non-exclusive license to use this content on our platform and marketing materials.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">When sellers upload clothing images or product details:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc">
+              <li>The content may be reviewed by Revendre before publication</li>
+              <li>The content may be stored and displayed on the platform</li>
+              <li>The content may be used to verify items during pickup inspection</li>
+            </ul>
+            <p className="text-earth-600 text-sm leading-relaxed mt-2 italic">Users remain responsible for the content they upload.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">5. Payment Processing</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Payment information including credit card numbers, debit card details, and bank account information is encrypted and never stored on our servers. All payments are processed through PCI-DSS compliant payment gateways. We use tokenization to ensure your payment details remain secure across transactions.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Payments on Revendre are processed through third-party payment gateways. Revendre does not store sensitive payment card information such as:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>Credit card numbers</li>
+              <li>Debit card details</li>
+              <li>CVV numbers</li>
+            </ul>
+            <p className="text-earth-600 text-sm leading-relaxed">Payment gateways handle payment processing in accordance with their own privacy and security standards.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">6. Information Sharing</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">We DO NOT sell your personal information to third parties. We may share information with:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• <strong>Service Providers:</strong> Shipping partners, payment processors, and customer support vendors under confidentiality agreements</li>
-              <li>• <strong>Legal Requirements:</strong> Law enforcement agencies when required by court order or legal process</li>
-              <li>• <strong>Fraud Prevention:</strong> Other platforms may receive flagged accounts to prevent abuse across the e-commerce ecosystem</li>
-            </ul>
+            <p className="text-earth-600 text-sm leading-relaxed mb-3">Revendre may share user information only in the following circumstances:</p>
+            <div className="space-y-3 text-earth-600 text-sm leading-relaxed">
+              <p><strong>Logistics Partners:</strong> Information such as pickup or delivery address may be shared with logistics providers to complete order fulfillment.</p>
+              <p><strong>Payment Gateways:</strong> Transaction information may be shared with payment service providers to process payments securely.</p>
+              <p><strong>Legal Compliance:</strong> Revendre may disclose information if required by law, court order, or government authorities.</p>
+              <p className="font-bold">Revendre does not sell personal data to third parties.</p>
+            </div>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">7. Data Storage and Security</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Your data is stored on secure servers with encryption at rest and in transit. We implement multi-factor authentication, regular security audits, and access controls to protect against unauthorized access. Employees can only access data necessary for their job functions.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre implements reasonable security measures to protect user information from unauthorized access, alteration, or disclosure.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2 italic">However, no digital platform can guarantee absolute security.</p>
+            <p className="text-earth-600 text-sm leading-relaxed">Users are responsible for maintaining the confidentiality of their account credentials.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">8. Data Retention</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">We retain your personal information as long as your account is active or as necessary to provide services. After account deletion, we retain transaction records for 7 years for tax and legal compliance. You can request permanent data deletion subject to legal and operational requirements.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre retains personal information only for as long as necessary to:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>Provide platform services</li>
+              <li>Comply with legal obligations</li>
+              <li>Resolve disputes</li>
+              <li>Enforce platform policies</li>
+            </ul>
+            <p className="text-earth-600 text-sm leading-relaxed">Users may request account deletion subject to legal and operational requirements.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">9. User Rights</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">Under applicable data protection laws, you have the right to:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• Access a copy of the personal data we hold about you</li>
-              <li>• Correct inaccurate or incomplete information</li>
-              <li>• Request deletion of your data (subject to legal holds)</li>
-              <li>• Opt-out of marketing communications</li>
-              <li>• Request restriction of processing for specific purposes</li>
-              <li>• Data portability - receive your data in a machine-readable format</li>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Users may have the right to:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>Access their personal data</li>
+              <li>Update account information</li>
+              <li>Request correction of inaccurate information</li>
+              <li>Request account deletion where applicable</li>
             </ul>
+            <p className="text-earth-600 text-sm leading-relaxed">Requests may be submitted through the contact information provided below.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">10. Cookies and App Analytics</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">We use cookies and similar technologies to remember your preferences, track navigation patterns, and measure feature usage. Within the app, we use analytics to count visits, understand how features are used, and improve performance. You can control analytics preferences in your account settings.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre may use analytics tools and cookies to understand how users interact with the platform. This helps improve:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>App performance</li>
+              <li>Feature development</li>
+              <li>User experience</li>
+            </ul>
+            <p className="text-earth-600 text-sm leading-relaxed">Analytics data does not identify individual users personally.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">11. Third-Party Services</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Our app integrates with third-party services for analytics (Firebase), payments (Stripe, PayU), and customer support. These services have their own privacy policies. We recommend reviewing their privacy practices as they may collect and use your information independently.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">The platform may integrate with third-party services including payment gateways, logistics providers, and analytics tools. These third parties may have their own privacy policies governing the use of information.</p>
+            <p className="text-earth-600 text-sm leading-relaxed italic">Revendre is not responsible for the privacy practices of external services.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">12. Children's Privacy</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Revendre is not intended for users under 18 years old. We do not knowingly collect personal information from minors. If we become aware that a minor has provided information, we will delete such information and terminate the minor's account immediately.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre is intended for users 18 years and older.</p>
+            <p className="text-earth-600 text-sm leading-relaxed">The platform does not knowingly collect personal information from individuals under the age of 18.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">13. Changes to This Privacy Policy</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">We may update this Privacy Policy periodically to reflect changes in our practices or legal requirements. We will notify you of material changes via email or in-app notification. Your continued use of Revendre after changes indicates your acceptance of the updated policy.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre may update this Privacy Policy from time to time. Users will be notified of significant updates through the platform.</p>
+            <p className="text-earth-600 text-sm leading-relaxed italic">Continued use of the platform after updates constitutes acceptance of the revised policy.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">14. Contact Information</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">If you have questions about this Privacy Policy or our data practices, please contact us at:</p>
-            <p className="text-earth-600 text-sm leading-relaxed"><strong>Email:</strong> privacy@revendre.com</p>
-            <p className="text-earth-600 text-sm leading-relaxed"><strong>Mailing Address:</strong> Revendre Marketplace Pvt Ltd., Chennai, Tamil Nadu, India</p>
-            <p className="text-earth-600 text-sm leading-relaxed"><strong>Response Time:</strong> We will respond to your inquiry within 30 days</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-4">For questions or concerns regarding this Privacy Policy, contact:</p>
+            <div className="text-earth-600 text-sm leading-relaxed">
+              <p className="font-bold">Revendre</p>
+              <p>(Operated by Touchnova LLP)</p>
+              <div className="mt-2">
+                <p className="font-bold">Registered Office:</p>
+                <p>3-299, Greamspet</p>
+                <p>Chittoor, Andhra Pradesh - 517002</p>
+                <p>India</p>
+              </div>
+              <div className="mt-2">
+                <p className="font-bold">Operational Office:</p>
+                <p>Chennai, Tamil Nadu, India</p>
+              </div>
+              <p className="mt-2"><strong>Email:</strong> teamrevendre@gmail.com</p>
+              <p><strong>Phone:</strong> +91 8317696536</p>
+            </div>
           </section>
         </div>
       </div>
+
       <div className="px-6 py-6 border-t border-earth-50 text-center space-y-1">
         <p className="text-[10px] font-black text-earth-400 tracking-widest flex items-center justify-center gap-1.5 uppercase">
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
         </p>
         <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-          © 2026 Revendre Marketplace Pvt Ltd.
+          © 2026 Touchnova LLP. All Rights Reserved.
         </p>
       </div>
     </div>
@@ -948,7 +1193,6 @@ const PrivacyPolicyDetailView = ({ onBack }: { onBack: () => void }) => {
 };
 
 // --- Terms & Conditions Detail View ---
-
 const TermsConditionsDetailView = ({ onBack }: { onBack: () => void }) => {
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
@@ -961,153 +1205,221 @@ const TermsConditionsDetailView = ({ onBack }: { onBack: () => void }) => {
           <X className="w-6 h-6 text-earth-900" />
         </button>
       </div>
+
       <div className="flex-1 px-6 py-8 pb-20 overflow-y-auto">
         <div className="space-y-8">
           <section>
-            <h2 className="font-display font-black text-2xl text-earth-900 mb-4">Terms & Conditions</h2>
-            <p className="text-earth-600 text-sm leading-relaxed">Effective Date: January 1, 2026</p>
+            <h2 className="font-display font-black text-2xl text-earth-900 mb-4">Terms and Conditions</h2>
+            <p className="text-earth-600 text-sm leading-relaxed mb-4">Effective Date: [Insert Launch Date]</p>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              These Terms and Conditions ("Terms") govern your access to and use of the Revendre mobile application and related services ("Platform"). Revendre is a digital marketplace operated by Touchnova LLP. By accessing or using the Revendre platform, you agree to comply with these Terms.
+            </p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">1. Platform Overview</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Revendre is a peer-to-peer marketplace platform that enables users to buy and sell pre-loved items. Revendre Marketplace Pvt Ltd. ("Revendre," "Company," "we," or "us") provides the technology infrastructure but does not directly buy, sell, deliver, or provide payment services. By accessing or using Revendre, you agree to be bound by these Terms & Conditions.</p>
+            <p className="text-earth-600 text-sm leading-relaxed mb-4">
+              Revendre is a consumer-to-consumer (C2C) resale marketplace that enables users to buy and sell pre-owned clothing items. The platform provides services including:
+            </p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-4">
+              <li>Listing and discovery of used clothing</li>
+              <li>Secure payment processing</li>
+              <li>Sanitization and hygiene preparation of garments</li>
+              <li>Logistics coordination for pickup and delivery</li>
+            </ul>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Revendre facilitates transactions between independent buyers and sellers while coordinating sanitization, logistics, and payment processing. Revendre does not manufacture clothing items and does not guarantee product authenticity or condition beyond the verification processes conducted by the platform.
+            </p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">2. Eligibility</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">To use Revendre, you must:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• Be at least 18 years of age or the legal age of majority in your jurisdiction</li>
-              <li>• Have the legal capacity to enter into binding agreements</li>
-              <li>• Not be prohibited from using the platform by law or these terms</li>
-              <li>• Reside in India or an authorized jurisdiction</li>
-              <li>• Agree to comply with all applicable laws and regulations</li>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Users must be at least 18 years old to use the platform. By using Revendre, you confirm that:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc">
+              <li>You are at least 18 years of age</li>
+              <li>You have the legal capacity to enter binding agreements</li>
+              <li>All information provided during registration is accurate and truthful</li>
             </ul>
+            <p className="text-earth-600 text-sm leading-relaxed mt-2">Revendre reserves the right to request identity verification where required.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">3. Account Registration and Responsibility</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">When you create an account, you agree to provide accurate, complete, and current information. You are responsible for:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• Maintaining the confidentiality of your password and account credentials</li>
-              <li>• All activity that occurs under your account</li>
-              <li>• Notifying us immediately of unauthorized access</li>
-              <li>• Ensuring your contact information remains up-to-date</li>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Users may be required to create an account to access platform services. Users agree to:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>Provide accurate information during registration</li>
+              <li>Maintain the confidentiality of their account credentials</li>
+              <li>Accept responsibility for activities conducted through their account</li>
             </ul>
-            <p className="text-earth-600 text-sm leading-relaxed mt-2">Revendre reserves the right to suspend or terminate accounts with false information or suspicious activity.</p>
+            <p className="text-earth-600 text-sm leading-relaxed">Revendre may suspend or terminate accounts involved in fraud, abuse, or policy violations.</p>
           </section>
 
           <section>
             <h3 className="font-display font-black text-xl text-earth-900 mb-3">4. Seller Responsibilities</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">As a seller, you agree to:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• Only list authentic items that you own or have the right to sell</li>
-              <li>• Provide accurate descriptions, condition details, and photos of items</li>
-              <li>• Disclose any defects, damage, or wear to items</li>
-              <li>• Price items fairly and according to marketplace standards</li>
-              <li>• Pack items securely to prevent damage during transit</li>
-              <li>• Ship items via the courier partner within 48 hours of payment</li>
-              <li>• Provide accurate tracking information to buyers</li>
-              <li>• Not engage in fraud, counterfeit sales, or illegal activities</li>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Sellers using the platform agree to:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>List only clothing items legally owned by them</li>
+              <li>Provide accurate product descriptions</li>
+              <li>Upload authentic images of items</li>
+              <li>Ensure items comply with platform policies</li>
             </ul>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Sellers acknowledge that misleading listings may result in listing removal, order cancellation, or account suspension. Seller payouts will be processed only after the item has been verified and successfully collected from the seller and the transaction is completed.</p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">5. Buyer Responsibilities</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">As a buyer, you agree to:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• Carefully review item descriptions, photos, and seller ratings before purchasing</li>
-              <li>• Contact sellers with questions before completing the purchase</li>
-              <li>• Accept responsibility for the accuracy of your delivery address</li>
-              <li>• Receive items within the promised delivery timeframe</li>
-              <li>• Inspect items immediately upon receipt</li>
-              <li>• Report issues or damaged items within 48 hours</li>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">5. Listing Approval and Moderation</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              All listings are subject to review and approval by the platform before publication. Listings will remain in a pending state until reviewed to ensure the product is an approved clothing item, images are accurate, and the listing complies with prohibited product rules. Revendre reserves the right to approve, reject, edit, suspend, or remove listings at its sole discretion.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">6. Buyer Responsibilities</h3>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Buyers agree to:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>Review product descriptions carefully before purchasing</li>
+              <li>Complete payments through the Revendre platform</li>
+              <li>Provide accurate delivery information</li>
             </ul>
+            <p className="text-earth-600 text-sm leading-relaxed">Buyers acknowledge that items sold on Revendre are pre-owned garments and may show normal signs of wear.</p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">6. Orders, Logistics and Delivery</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Order Process:</strong> Once you purchase an item, the seller receives a notification and has 48 hours to ship the item.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Standard Delivery:</strong> Standard delivery takes 3-5 business days for metro cities and 5-7 days for tier-2 and tier-3 cities.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Tracking:</strong> Once shipped, you will receive a tracking ID to monitor your package in real-time.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Delays:</strong> Revendre is not responsible for delays caused by external factors including weather, courier partner issues, or customs clearance.</p>
-            <p className="text-earth-600 text-sm leading-relaxed">• <strong>Lost Packages:</strong> If a package is lost in transit, the buyer will receive a full refund after submitting proof to Revendre support.</p>
-          </section>
-
-          <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">7. Returns and Refunds</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Return Window:</strong> Buyers have 7 days from delivery to initiate a return if the item does not match the description or is damaged.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Return Conditions:</strong> Items must be in the same condition as received. Returns are not available for change of mind, personal preference, or buyer's remorse.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Return Shipping:</strong> Return shipping costs are covered by Revendre. A prepaid return label will be provided.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Refund Processing:</strong> Once the return is received and inspected, refunds are processed within 5-7 business days.</p>
-            <p className="text-earth-600 text-sm leading-relaxed">• <strong>Final Sale Items:</strong> Some items may be marked as "Final Sale" and are not eligible for returns.</p>
-          </section>
-
-          <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">8. Prohibited Listings and Activities</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">Sellers may NOT list:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• Counterfeit, replica, or stolen goods</li>
-              <li>• Weapons, explosives, or hazardous materials</li>
-              <li>• Banned substances or illegal drugs</li>
-              <li>• Perishable items or items requiring special handling</li>
-              <li>• Items that infringe on intellectual property rights</li>
-              <li>• Adult content or explicit materials</li>
-              <li>• Service offerings or non-physical items</li>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">7. Fees and Charges</h3>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre may charge certain service-related fees including:</p>
+            <ul className="text-earth-600 text-sm leading-relaxed space-y-1 pl-5 list-disc mb-2">
+              <li>Logistics fees for product transportation and delivery</li>
+              <li>Sanitization fees for garment cleaning and preparation</li>
+              <li>Payment gateway processing fees</li>
             </ul>
-            <p className="text-earth-600 text-sm leading-relaxed mt-2">Prohibited activities include harassment, false advertising, attempts to circumvent fees, and external transaction facilitation.</p>
+            <p className="text-earth-600 text-sm leading-relaxed">All applicable charges will be clearly displayed before payment confirmation. Revendre reserves the right to modify service fees with prior notice.</p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">9. Payment Disputes and Chargebacks</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Payment Protection:</strong> All payments are held in escrow until the buyer confirms receipt and satisfaction with the item.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Dispute Resolution:</strong> In case of payment disputes, both parties must communicate through Revendre support within 30 days.</p>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">• <strong>Chargebacks:</strong> If a buyer initiates a chargeback with their bank/card, Revendre will investigate. Fraudulent chargebacks may result in account termination.</p>
-            <p className="text-earth-600 text-sm leading-relaxed">• <strong>Final Decision:</strong> Revendre's decision on disputes is final and binding on both parties.</p>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">8. Orders, Logistics and Delivery</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Orders are processed only after successful payment confirmation. Revendre coordinates logistics to collect items, perform sanitization, and deliver to buyers. Risk of loss transfers to the buyer upon successful delivery confirmation. Revendre reserves the right to cancel orders suspected of fraud or policy violations.
+            </p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">10. Intellectual Property</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">All content on Revendre including logos, design, text, and code is owned by Revendre or its licensors. Users grant Revendre a license to use photos and descriptions uploaded for verification and marketing purposes. You may not reproduce, distribute, or modify any content without prior written consent.</p>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">9. Seller Pickup Verification</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Items may be inspected at the time of collection from the seller to verify they match the images and description, category, and condition. If the item does not match, Revendre may reject the item, cancel the order, or suspend the seller account for repeated violations.
+            </p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">11. Limitation of Liability</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">Revendre provides the platform "as is" without warranties of any kind. To the fullest extent permitted by law:</p>
-            <ul className="text-earth-600 text-sm leading-relaxed space-y-2">
-              <li>• Revendre is not liable for indirect, incidental, special, or consequential damages</li>
-              <li>• Our total liability shall not exceed the amount you have paid on the platform in the past 12 months</li>
-              <li>• We are not responsible for third-party payment processor or courier partner failures</li>
-              <li>• Users assume all risks associated with transactions</li>
-            </ul>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">10. Product Condition and Sanitization</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Because products are pre-owned, they may show natural signs of usage. Revendre may perform sanitization procedures before delivery, but does not guarantee garments will be free from cosmetic imperfections or minor defects associated with second-hand clothing.
+            </p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">12. Data and Privacy</h3>
-            <p className="text-earth-600 text-sm leading-relaxed">Your use of Revendre is also governed by our Privacy Policy. Please review our Privacy Policy to understand our practices regarding data collection and usage.</p>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">11. Returns and Refunds</h3>
+            <p className="text-earth-600 text-sm leading-relaxed mb-2">Returns are accepted only if the product is significantly different from its listing description or damaged during delivery. Return requests must be submitted within 5 days of delivery.</p>
+            <p className="text-earth-600 text-sm leading-relaxed">Refunds will be processed after inspection and may be denied in cases of buyer misuse, false claims, or product tampering.</p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">13. Governing Law and Dispute Resolution</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">These Terms & Conditions shall be governed by and construed in accordance with the laws of India, without regard to conflict of law principles.</p>
-            <p className="text-earth-600 text-sm leading-relaxed">Any disputes arising from these terms shall be subject to the exclusive jurisdiction of courts in Chennai, Tamil Nadu.</p>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">12. Prohibited Listings and Activities</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Users must not list counterfeit branded clothing, stolen goods, illegal items, or non-clothing products. Prohibited activities include hacking, manipulation of ratings, or illegal financial activity.
+            </p>
           </section>
 
           <section>
-            <h3 className="font-display font-black text-xl text-earth-900 mb-3">14. Contact Information</h3>
-            <p className="text-earth-600 text-sm leading-relaxed mb-2">For questions, complaints, or concerns regarding these Terms & Conditions, please contact us:</p>
-            <p className="text-earth-600 text-sm leading-relaxed"><strong>Email:</strong> support@revendre.com</p>
-            <p className="text-earth-600 text-sm leading-relaxed"><strong>Mailing Address:</strong> Revendre Marketplace Pvt Ltd., Chennai, Tamil Nadu, India</p>
-            <p className="text-earth-600 text-sm leading-relaxed"><strong>Response Time:</strong> We will respond to your inquiry within 5-7 business days</p>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">13. Payment Disputes and Chargebacks</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Revendre reserves the right to suspend accounts and investigate transactions for unjustified chargebacks. Seller payouts may be temporarily withheld during dispute investigations.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">14. Intellectual Property</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              All intellectual property, including software, logos, platform design, and trademarks, are owned by Touchnova LLP. Unauthorized reproduction is prohibited.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">15. Limitation of Liability</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Revendre's maximum liability shall not exceed the transaction value paid through the platform. We are not liable for indirect damages, profits loss, or logistics delays outside our control.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">16. Indemnification</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Users agree to indemnify Revendre and Touchnova LLP from any claims or losses arising from platform misuse or violation of these Terms.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">17. Force Majeure</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Revendre is not liable for delays caused by events beyond reasonable control, including natural disasters, technical failures, or logistics disruptions.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">18. Data and Privacy</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              User data is handled in accordance with Indian information technology laws and Revendre's Privacy Policy. Sensitive payment card details are not stored.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">19. Termination</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Revendre reserves the right to suspend or terminate platform access for policy violations or detected fraudulent activity without prior notice.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">20. Governing Law and Dispute Resolution</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              These Terms shall be governed by the laws of India. Disputes shall first be attempted to be resolved through negotiation; if unresolved, disputes shall be settled through arbitration in Chennai, Tamil Nadu.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">21. Modifications to Terms</h3>
+            <p className="text-earth-600 text-sm leading-relaxed">
+              Revendre reserves the right to update these Terms at any time. Continued use of the platform after updates constitutes acceptance of the revised Terms.
+            </p>
+          </section>
+
+          <section>
+            <h3 className="font-display font-black text-xl text-earth-900 mb-3">22. Contact Information</h3>
+            <div className="text-earth-600 text-sm leading-relaxed">
+              <p className="font-bold">Revendre</p>
+              <p>(Operated by Touchnova LLP)</p>
+              <div className="mt-2">
+                <p className="font-bold">Registered Office:</p>
+                <p>3-299, Greamspet</p>
+                <p>Chittoor, Andhra Pradesh - 517002</p>
+                <p>India</p>
+              </div>
+              <div className="mt-2">
+                <p className="font-bold">Operational Office:</p>
+                <p>Chennai, Tamil Nadu, India</p>
+              </div>
+              <p className="mt-2"><strong>Email:</strong> teamrevendre@gmail.com</p>
+              <p><strong>Phone:</strong> +91 8317696536</p>
+            </div>
           </section>
         </div>
       </div>
+
       <div className="px-6 py-6 border-t border-earth-50 text-center space-y-1">
         <p className="text-[10px] font-black text-earth-400 tracking-widest flex items-center justify-center gap-1.5 uppercase">
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
         </p>
         <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-          © 2026 Revendre Marketplace Pvt Ltd.
+          © 2026 Touchnova LLP. All Rights Reserved.
         </p>
       </div>
     </div>
