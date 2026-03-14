@@ -17,12 +17,12 @@ import { getFunctions } from 'firebase/functions';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyChSaZ59CfZ8XbYWygSvnly4lXZaPzeO20",
-  authDomain: "revendre-341ef.firebaseapp.com",
-  projectId: "revendre-341ef",
-  storageBucket: "revendre-341ef.firebasestorage.app",
-  messagingSenderId: "524420025693",
-  appId: "1:524420025693:web:b41588d6a649ad4f3fecb4"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
