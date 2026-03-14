@@ -41,6 +41,8 @@ export interface User {
   gender?: string;
   addresses?: Address[];
   isAdmin?: boolean; // New: Admin Flag
+  isPrivate?: boolean;
+  whitelistedUserIds?: string[];
 }
 
 export interface ImageMetadata {

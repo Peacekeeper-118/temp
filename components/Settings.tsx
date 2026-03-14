@@ -38,9 +38,11 @@ import {
   ScrollText
 } from 'lucide-react';
 import { Button } from './Button';
+import { UserSearchModal } from './UserSearchModal';
 
 interface SettingsProps {
   currentUser: User;
+  allUsers: User[];
   onUpdateUser: (updatedData: Partial<User>) => Promise<void>;
   onDeleteAccount: () => Promise<void>;
   onBack: () => void;
@@ -428,9 +430,55 @@ const NotificationsView = ({ onBack }: { onBack: () => void }) => {
   );
 };
 
-const PrivacySecurityView = ({ onBack }: { onBack: () => void }) => {
-  const [isPrivate, setIsPrivate] = useState(false);
+const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: { 
+  currentUser: User, 
+  allUsers: User[],
+  onUpdateUser: (data: Partial<User>) => Promise<void>,
+  onBack: () => void 
+}) => {
+  const [isPrivate, setIsPrivate] = useState(currentUser.isPrivate || false);
   const [showActivity, setShowActivity] = useState(true);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [whitelistedUsers, setWhitelistedUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    // Filter allUsers to find those who are already whitelisted (by ID)
+    const whitelisted = allUsers.filter(u => (currentUser.whitelistedUserIds || []).includes(u.id));
+    setWhitelistedUsers(whitelisted);
+  }, [allUsers, currentUser.whitelistedUserIds]);
+
+  const handleTogglePrivate = async () => {
+    const newVal = !isPrivate;
+    setIsPrivate(newVal);
+    try {
+      await onUpdateUser({ isPrivate: newVal });
+    } catch (error) {
+      setIsPrivate(!newVal);
+      console.error("Failed to update privacy", error);
+    }
+  };
+
+  const handleAddUser = async (userToAdd: User) => {
+    if (currentUser.whitelistedUserIds?.includes(userToAdd.id)) return;
+    
+    const newIds = [...(currentUser.whitelistedUserIds || []), userToAdd.id];
+    try {
+      await onUpdateUser({ whitelistedUserIds: newIds });
+      setWhitelistedUsers([...whitelistedUsers, userToAdd]);
+    } catch (error) {
+      console.error("Failed to whitelist user", error);
+    }
+  };
+
+  const handleRemoveUser = async (userId: string) => {
+    const newIds = (currentUser.whitelistedUserIds || []).filter(id => id !== userId);
+    try {
+      await onUpdateUser({ whitelistedUserIds: newIds });
+      setWhitelistedUsers(whitelistedUsers.filter(u => u.id !== userId));
+    } catch (error) {
+      console.error("Failed to remove user from whitelist", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
@@ -442,7 +490,7 @@ const PrivacySecurityView = ({ onBack }: { onBack: () => void }) => {
         <h1 className="text-3xl font-display font-black text-earth-900">Privacy & Security</h1>
       </div>
 
-      <div className="px-6 space-y-10 pb-12">
+      <div className="px-6 space-y-10 pb-24 overflow-y-auto">
         {/* Account Privacy */}
         <div className="space-y-4">
           <h3 className="text-xs font-black text-earth-400 uppercase tracking-widest ml-1">Account Privacy</h3>
@@ -457,7 +505,7 @@ const PrivacySecurityView = ({ onBack }: { onBack: () => void }) => {
                   <p className="text-[11px] text-earth-400 font-medium">Only people you approve can see your posts.</p>
                 </div>
               </div>
-              <Toggle active={isPrivate} onToggle={() => setIsPrivate(!isPrivate)} />
+              <Toggle active={isPrivate} onToggle={handleTogglePrivate} />
             </div>
             
             <div className="flex items-center justify-between">
@@ -474,6 +522,46 @@ const PrivacySecurityView = ({ onBack }: { onBack: () => void }) => {
             </div>
           </div>
         </div>
+
+        {/* Whitelist Section - Only show when Private is ON */}
+        {isPrivate && (
+          <div className="space-y-4 animate-fade-in">
+             <div className="flex items-center justify-between px-1">
+               <h3 className="text-xs font-black text-earth-400 uppercase tracking-widest">Whitelisted Users</h3>
+               <button 
+                  onClick={() => setIsSearchOpen(true)}
+                  className="text-[10px] font-black text-pop-purple uppercase tracking-tighter bg-pop-purple/5 px-3 py-1 rounded-full"
+               >
+                 + Add User
+               </button>
+             </div>
+             
+             <div className="bg-[#F9F9F9] p-2 rounded-[2rem]">
+                {whitelistedUsers.length === 0 ? (
+                  <div className="p-8 text-center">
+                     <p className="text-xs text-earth-400 font-bold italic">No users whitelisted yet.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {whitelistedUsers.map(user => (
+                      <div key={user.id} className="bg-white p-3 rounded-2xl flex items-center justify-between shadow-sm">
+                        <div className="flex items-center gap-3">
+                           <img src={user.avatarUrl} className="w-8 h-8 rounded-full object-cover" />
+                           <span className="text-xs font-bold text-earth-900">@{user.username}</span>
+                        </div>
+                        <button 
+                          onClick={() => handleRemoveUser(user.id)}
+                          className="p-2 text-earth-300 hover:text-red-500 transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+             </div>
+          </div>
+        )}
 
         {/* Security Section */}
         <div className="space-y-4">
@@ -524,6 +612,13 @@ const PrivacySecurityView = ({ onBack }: { onBack: () => void }) => {
           </div>
         </div>
       </div>
+
+      <UserSearchModal 
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        users={allUsers.filter(u => u.id !== currentUser.id && !currentUser.whitelistedUserIds?.includes(u.id))}
+        onSelectUser={handleAddUser}
+      />
     </div>
   );
 };
@@ -1736,7 +1831,7 @@ const AboutView = ({ onBack, onOpenPolicy }: { onBack: () => void; onOpenPolicy:
 
 // --- Main Settings Component ---
 
-export const Settings: React.FC<SettingsProps> = ({ currentUser, onUpdateUser, onDeleteAccount, onBack, initialView = 'menu' }) => {
+export const Settings: React.FC<SettingsProps> = ({ currentUser, allUsers, onUpdateUser, onDeleteAccount, onBack, initialView = 'menu' }) => {
   const [currentView, setCurrentView] = useState<SettingsView>(initialView);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -1747,7 +1842,7 @@ export const Settings: React.FC<SettingsProps> = ({ currentUser, onUpdateUser, o
       case 'notifications': 
         return <NotificationsView onBack={() => setCurrentView('menu')} />;
       case 'privacy': 
-        return <PrivacySecurityView onBack={() => setCurrentView('menu')} />;
+        return <PrivacySecurityView currentUser={currentUser} allUsers={allUsers} onUpdateUser={onUpdateUser} onBack={() => setCurrentView('menu')} />;
       case 'help': 
         return <HelpSupportView onBack={() => setCurrentView('menu')} />;
       case 'about': 

@@ -23,7 +23,7 @@ import { MOCK_POSTS, CATEGORIES, MOCK_ORDERS } from './constants';
 import { Search, ShoppingBag, Trash2, ArrowRight, ShieldCheck, LogOut, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { auth, googleProvider, db, isMock, signInWithPopup, onAuthStateChanged, signOut, deleteUser } from './services/firebase';
 import { searchPosts } from './services/searchService';
-import { doc, setDoc, updateDoc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, limit, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, limit, deleteDoc, getDocs } from 'firebase/firestore';
 import { NeoSkateboard, NeoButterfly, NeoSparkles, NeoSneaker, NeoCassette, NeoFire, NeoBag, NeoGhost, NeoStar } from './components/NeoIcons';
 import { Button } from './components/Button';
 
@@ -53,6 +53,7 @@ const App: React.FC = () => {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   const [pendingPaymentOrder, setPendingPaymentOrder] = useState<Order | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
+  const [allUsers, setAllUsers] = useState<UserType[]>([]);
   
   const [posts, setPosts] = useState<Post[]>(MOCK_POSTS);
   const [cart, setCart] = useState<Post[]>([]);
@@ -270,6 +271,25 @@ const App: React.FC = () => {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (isMock) return;
+
+    const fetchUsers = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        const usersList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as UserType[];
+        setAllUsers(usersList);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [user]); // Re-fetch when current user changes (e.g. login/logout)
 
   const createDemoUser = (ageEligibleForPayouts: boolean, data?: { phoneNumber?: string, isSignup?: boolean }) => {
       const demoId = `demo-user-${Date.now()}`;
@@ -700,6 +720,7 @@ const App: React.FC = () => {
           return (
             <Settings 
                 currentUser={user} 
+                allUsers={allUsers}
                 onUpdateUser={handleUpdateProfile} 
                 onDeleteAccount={handleDeleteAccount}
                 onBack={() => setActiveTab(Tab.PROFILE)} 
