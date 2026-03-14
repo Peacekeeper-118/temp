@@ -41,7 +41,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const checkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  //Adress is connected to firebase automatically so no speacific function is needed to save it. 
   // Address State
   const [address, setAddress] = useState({
     fullName: '',

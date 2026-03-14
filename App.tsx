@@ -122,7 +122,7 @@ const App: React.FC = () => {
     let unsubscribe: (() => void) | undefined;
 
     // Races a promise against a timeout — whichever resolves first wins
-    const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T | null> =>
+    const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T | null> =>
       Promise.race([
         promise,
         new Promise<null>(resolve => setTimeout(() => resolve(null), ms))
