@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from './Button';
 import { Check, ArrowRight, Phone, ArrowLeft, AlertCircle } from 'lucide-react';
-import { NeoSparkles, NeoSneaker, NeoFire } from './NeoIcons';
+import { NeoSparkles, NeoSneaker } from './NeoIcons';
+import { auth, signInWithPhoneNumber, RecaptchaVerifier } from '../services/firebase';
+import type { ConfirmationResult } from '../services/firebase';
 
 interface AuthProps {
   onLoginSuccess: (method: string, ageEligibleForPayouts: boolean, data?: { phoneNumber?: string, isSignup?: boolean }) => void;
@@ -12,16 +14,22 @@ export const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
   const [authMode, setAuthMode] = useState<'signup' | 'login'>('signup');
   const [is18Plus, setIs18Plus] = useState(false);
   
-  // Mobile Flow States
   const [view, setView] = useState<'main' | 'mobile_phone' | 'mobile_otp'>('main');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handle18PlusToggle = () => {
-    setIs18Plus(!is18Plus);
+  const recaptchaVerifierRef = useRef<InstanceType<typeof RecaptchaVerifier> | null>(null);
+  const confirmationResultRef = useRef<ConfirmationResult | null>(null);
+
+  const clearRecaptcha = () => {
+    if (recaptchaVerifierRef.current) {
+      recaptchaVerifierRef.current.clear();
+      recaptchaVerifierRef.current = null;
+    }
   };
-  
+
   const handleGoogleLogin = () => {
       if (authMode === 'signup' && !is18Plus) return;
       onLoginSuccess('google', is18Plus, { isSignup: authMode === 'signup' });
@@ -29,35 +37,73 @@ export const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
 
   const handleMobileStart = () => {
       if (authMode === 'signup' && !is18Plus) return;
+      setError('');
       setView('mobile_phone');
   };
 
-  const handleSendOtp = () => {
-      if(phoneNumber.length < 10) return;
+  const handleSendOtp = async () => {
+      if (phoneNumber.length < 10) return;
       setIsLoading(true);
-      setTimeout(() => {
-          setIsLoading(false);
-          setView('mobile_otp');
-      }, 600);
-  };
+      setError('');
+      clearRecaptcha();
 
-  const handleVerifyOtp = () => {
-      if(otp.length < 4) return;
-      setIsLoading(true);
-      setTimeout(() => {
-          setIsLoading(false);
-          onLoginSuccess('mobile', is18Plus, { 
-            phoneNumber: `+91${phoneNumber}`,
-            isSignup: authMode === 'signup'
+      try {
+          const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+              size: 'invisible',
+              callback: () => {},
           });
-      }, 600);
+          recaptchaVerifierRef.current = verifier;
+
+          const result = await signInWithPhoneNumber(auth, `+91${phoneNumber}`, verifier);
+          confirmationResultRef.current = result;
+          setView('mobile_otp');
+      } catch (err: any) {
+          console.error('OTP send error:', err);
+          clearRecaptcha();
+          if (err.code === 'auth/invalid-phone-number') {
+              setError('Invalid phone number. Please check and try again.');
+          } else if (err.code === 'auth/too-many-requests') {
+              setError('Too many attempts. Please try again later.');
+          } else {
+              setError('Failed to send OTP. Please try again.');
+          }
+      } finally {
+          setIsLoading(false);
+      }
   };
 
-  const isSignUp = authMode === 'signup';
-  const isMainActionEnabled = !isSignUp || is18Plus;
+  const handleVerifyOtp = async () => {
+      if (otp.length < 6 || !confirmationResultRef.current) return;
+      setIsLoading(true);
+      setError('');
+
+      try {
+          await confirmationResultRef.current.confirm(otp);
+          // onAuthStateChanged in App.tsx fires automatically — signal loading
+          onLoginSuccess('mobile', is18Plus, {
+              phoneNumber: `+91${phoneNumber}`,
+              isSignup: authMode === 'signup'
+          });
+      } catch (err: any) {
+          console.error('OTP verify error:', err);
+          if (err.code === 'auth/invalid-verification-code') {
+              setError('Incorrect OTP. Please try again.');
+          } else if (err.code === 'auth/code-expired') {
+              setError('OTP expired. Please go back and request a new one.');
+          } else {
+              setError('Verification failed. Please try again.');
+          }
+          setIsLoading(false);
+      }
+  };
+
+  const isMainActionEnabled = authMode === 'login' || is18Plus;
 
   return (
     <div className="min-h-screen bg-[#F8F8F7] flex flex-col relative overflow-hidden font-sans">
+        {/* Invisible reCAPTCHA container — must be in the DOM */}
+        <div id="recaptcha-container"></div>
+
         <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-pop-purple/10 rounded-full blur-[120px] animate-blob mix-blend-multiply pointer-events-none"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-pop-cyan/10 rounded-full blur-[100px] animate-blob animation-delay-2000 mix-blend-multiply pointer-events-none" style={{ animationDelay: '2s' }}></div>
         <div className="absolute top-[40%] right-[10%] w-[400px] h-[400px] bg-pop-yellow/10 rounded-full blur-[80px] animate-blob animation-delay-4000 mix-blend-multiply pointer-events-none" style={{ animationDelay: '4s' }}></div>
@@ -116,7 +162,7 @@ export const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                         {authMode === 'signup' && (
                             <div className="space-y-3 mb-6">
                                 <div 
-                                    onClick={handle18PlusToggle}
+                                    onClick={() => setIs18Plus(v => !v)}
                                     className={`group flex items-center gap-4 cursor-pointer p-4 rounded-2xl transition-all border-2 select-none ${is18Plus ? 'bg-white border-earth-900 shadow-lg transform scale-[1.02]' : 'bg-transparent border-earth-200 hover:bg-white/50 hover:border-earth-300'}`}
                                 >
                                     <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${is18Plus ? 'bg-earth-900 border-earth-900' : 'border-earth-300 group-hover:border-earth-400 bg-white'}`}>
@@ -168,27 +214,37 @@ export const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                      </div>
                  ) : view === 'mobile_phone' ? (
                      <div className="animate-slide-in-right">
-                         <button onClick={() => setView('main')} className="mb-6 flex items-center gap-2 text-earth-500 text-xs font-bold uppercase hover:text-earth-900 bg-earth-50 px-3 py-2 rounded-lg w-fit transition-colors">
+                         <button onClick={() => { setView('main'); setError(''); clearRecaptcha(); }} className="mb-6 flex items-center gap-2 text-earth-500 text-xs font-bold uppercase hover:text-earth-900 bg-earth-50 px-3 py-2 rounded-lg w-fit transition-colors">
                              <ArrowLeft className="w-4 h-4" /> Back
                          </button>
                          <h2 className="font-display font-bold text-2xl mb-2 text-earth-900">What's your number?</h2>
-                         <p className="text-earth-500 text-sm mb-6 font-medium">We'll send you a code to verify.</p>
+                         <p className="text-earth-500 text-sm mb-6 font-medium">We'll send you a 6-digit OTP to verify.</p>
                          
-                         <div className="flex items-center gap-3 mb-6">
+                         <div className="flex items-center gap-3 mb-4">
                              <div className="bg-earth-100 px-4 py-4 rounded-2xl font-bold text-earth-900 text-lg border-2 border-transparent">+91</div>
                              <input 
                                 autoFocus
                                 type="tel" 
+                                id="auth-phone"
+                                name="phone"
+                                autoComplete="tel"
                                 value={phoneNumber}
                                 onChange={(e) => {
-                                    const val = e.target.value.replace(/\D/g,'').slice(0, 10);
-                                    setPhoneNumber(val);
+                                    setPhoneNumber(e.target.value.replace(/\D/g,'').slice(0, 10));
+                                    setError('');
                                 }}
                                 maxLength={10}
                                 placeholder="00000 00000"
                                 className="flex-1 bg-earth-50 border-2 border-transparent focus:border-earth-900 focus:bg-white px-4 py-4 rounded-2xl font-bold text-lg outline-none transition-all placeholder:text-earth-300"
                              />
                          </div>
+
+                         {error && (
+                             <div className="flex items-center gap-2 mb-4 p-3 bg-pop-rose/5 rounded-xl border border-pop-rose/20">
+                                 <AlertCircle className="w-4 h-4 text-pop-rose shrink-0" />
+                                 <p className="text-xs font-bold text-pop-rose">{error}</p>
+                             </div>
+                         )}
 
                          <Button 
                             className="w-full py-3 text-base shadow-lg" 
@@ -201,7 +257,7 @@ export const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                      </div>
                  ) : (
                      <div className="animate-slide-in-right">
-                         <button onClick={() => setView('mobile_phone')} className="mb-6 flex items-center gap-2 text-earth-500 text-xs font-bold uppercase hover:text-earth-900 bg-earth-50 px-3 py-2 rounded-lg w-fit transition-colors">
+                         <button onClick={() => { setView('mobile_phone'); setOtp(''); setError(''); }} className="mb-6 flex items-center gap-2 text-earth-500 text-xs font-bold uppercase hover:text-earth-900 bg-earth-50 px-3 py-2 rounded-lg w-fit transition-colors">
                              <ArrowLeft className="w-4 h-4" /> Edit Number
                          </button>
                          <h2 className="font-display font-bold text-2xl mb-2 text-earth-900">Enter OTP</h2>
@@ -210,19 +266,33 @@ export const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                          <input 
                             autoFocus
                             type="text" 
+                            id="auth-otp"
+                            name="otp"
+                            autoComplete="one-time-code"
+                            inputMode="numeric"
                             value={otp}
-                            onChange={(e) => setOtp(e.target.value.slice(0, 6))}
+                            onChange={(e) => {
+                                setOtp(e.target.value.replace(/\D/g,'').slice(0, 6));
+                                setError('');
+                            }}
                             placeholder="000000"
-                            className="w-full bg-earth-50 border-2 border-transparent focus:border-earth-900 focus:bg-white px-4 py-4 rounded-2xl font-display font-black text-3xl text-center outline-none transition-all tracking-[0.5em] mb-6 placeholder:text-earth-200 text-earth-900"
+                            className="w-full bg-earth-50 border-2 border-transparent focus:border-earth-900 focus:bg-white px-4 py-4 rounded-2xl font-display font-black text-3xl text-center outline-none transition-all tracking-[0.5em] mb-4 placeholder:text-earth-200 text-earth-900"
                          />
+
+                         {error && (
+                             <div className="flex items-center gap-2 mb-4 p-3 bg-pop-rose/5 rounded-xl border border-pop-rose/20">
+                                 <AlertCircle className="w-4 h-4 text-pop-rose shrink-0" />
+                                 <p className="text-xs font-bold text-pop-rose">{error}</p>
+                             </div>
+                         )}
 
                          <Button 
                             className="w-full py-3 text-base shadow-lg" 
-                            disabled={otp.length < 4 || isLoading}
+                            disabled={otp.length < 6 || isLoading}
                             onClick={handleVerifyOtp}
                             isLoading={isLoading}
                         >
-                             Verify & Login
+                             Verify & Continue
                          </Button>
                      </div>
                  )}
@@ -231,3 +301,4 @@ export const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
     </div>
   );
 };
+

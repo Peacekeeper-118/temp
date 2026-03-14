@@ -21,8 +21,9 @@ import { ProductDetail } from './components/ProductDetail';
 import { Tab, Post, User as UserType, Category, Order, Address } from './types';
 import { MOCK_POSTS, CATEGORIES, MOCK_ORDERS } from './constants';
 import { Search, ShoppingBag, Trash2, ArrowRight, ShieldCheck, LogOut, SlidersHorizontal, Sparkles } from 'lucide-react';
-import { auth, googleProvider, db, isMock } from './services/firebase';
+import { auth, googleProvider, db, isMock, signInWithPopup, onAuthStateChanged, signOut } from './services/firebase';
 import { searchPosts } from './services/searchService';
+import { doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { NeoSkateboard, NeoButterfly, NeoSparkles, NeoSneaker, NeoCassette, NeoFire, NeoBag, NeoGhost, NeoStar } from './components/NeoIcons';
 import { Button } from './components/Button';
 
@@ -108,84 +109,112 @@ const App: React.FC = () => {
         setViewingPost(post);
       }
     }
-  }, [posts]);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
-    
+
+    // Hard-cap: never show splash longer than 8 seconds total
     const timeoutId = setTimeout(() => {
-      if (mounted && authLoading) {
-        setAuthLoading(false);
-      }
-    }, 5000);
+      if (mounted && authLoading) setAuthLoading(false);
+    }, 8000);
+
+    let unsubscribe: (() => void) | undefined;
+
+    // Races a promise against a timeout — whichever resolves first wins
+    const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T | null> =>
+      Promise.race([
+        promise,
+        new Promise<null>(resolve => setTimeout(() => resolve(null), ms))
+      ]);
+
+    const buildUser = (firebaseUser: any): UserType => {
+      const base: UserType = {
+        id: firebaseUser.uid,
+        username: '',
+        displayName: firebaseUser.displayName || '',
+        avatarUrl: firebaseUser.photoURL || '',
+        isVerified: false,
+        isSellerEligible: false,
+        sustainabilityScore: 0,
+        phoneVerified: !!firebaseUser.phoneNumber,
+        kycStatus: 'none',
+        sellerRating: 0,
+        totalSales: 0,
+        savedPostIds: [],
+        isAdmin: false,
+        addresses: []
+      };
+      if (firebaseUser.email) base.email = firebaseUser.email;
+      if (firebaseUser.phoneNumber) base.phoneNumber = firebaseUser.phoneNumber;
+      return base;
+    };
 
     const initAuth = async () => {
       try {
         if (!auth || typeof auth.onAuthStateChanged !== 'function') {
-           if (mounted) setAuthLoading(false);
-           return;
+          if (mounted) setAuthLoading(false);
+          return;
         }
 
-        auth.onAuthStateChanged(async (firebaseUser: any) => {
+        // No redirect pending — onAuthStateChanged handles sign-in state directly
+
+        unsubscribe = onAuthStateChanged(auth, async (firebaseUser: any) => {
           if (!mounted) return;
-          
+
           if (firebaseUser) {
             try {
               if (isMock) {
-                   const userData: UserType = {
-                      id: firebaseUser.uid,
-                      username: firebaseUser.displayName || 'Guest',
-                      displayName: firebaseUser.displayName || 'Guest',
-                      avatarUrl: firebaseUser.photoURL || 'https://picsum.photos/200',
-                      isVerified: false,
-                      isSellerEligible: true,
-                      sustainabilityScore: 0,
-                      phoneVerified: false,
-                      kycStatus: 'none',
-                      sellerRating: 0,
-                      totalSales: 0,
-                      savedPostIds: [],
-                      isAdmin: false,
-                      addresses: []
-                   };
-                   setUser(userData);
-                   setHasCompletedOnboarding(true); 
+                setUser({
+                  id: firebaseUser.uid,
+                  username: firebaseUser.displayName || 'Guest',
+                  displayName: firebaseUser.displayName || 'Guest',
+                  avatarUrl: firebaseUser.photoURL || 'https://picsum.photos/200',
+                  isVerified: false,
+                  isSellerEligible: true,
+                  sustainabilityScore: 0,
+                  phoneVerified: false,
+                  kycStatus: 'none',
+                  sellerRating: 0,
+                  totalSales: 0,
+                  savedPostIds: [],
+                  isAdmin: false,
+                  addresses: []
+                });
+                setHasCompletedOnboarding(true);
               } else {
-                  const userDocRef = db.collection('users').doc(firebaseUser.uid);
-                  const userDoc = await userDocRef.get();
+                const userDocRef = doc(db, "users", firebaseUser.uid);
+                const wasOnboarded = !!localStorage.getItem(`onboarded_${firebaseUser.uid}`);
 
-                  if (userDoc.exists) {
-                    const userData = userDoc.data() as UserType;
-                    setUser(userData);
-                    setSavedPostIds(userData.savedPostIds || []);
-                    setHasCompletedOnboarding(true);
-                  } else {
-                     const newUser: UserType = {
-                      id: firebaseUser.uid,
-                      username: '',
-                      displayName: firebaseUser.displayName || '',
-                      avatarUrl: firebaseUser.photoURL || '',
-                      isVerified: false,
-                      isSellerEligible: false,
-                      sustainabilityScore: 0,
-                      phoneVerified: false,
-                      kycStatus: 'none',
-                      sellerRating: 0,
-                      totalSales: 0,
-                      savedPostIds: [],
-                      addresses: []
-                    };
-                    setUser(newUser);
-                    setHasCompletedOnboarding(false);
-                  }
+                // Fetch Firestore doc — bail out after 4s if still not connected
+                const userDoc = await withTimeout(getDoc(userDocRef), 4000);
+
+                if (userDoc && userDoc.exists()) {
+                  // Returning user — restore full profile from Firestore
+                  const userData = userDoc.data() as UserType;
+                  setUser(userData);
+                  setSavedPostIds(userData.savedPostIds || []);
+                  setHasCompletedOnboarding(true);
+                  localStorage.setItem(`onboarded_${firebaseUser.uid}`, '1');
+                } else if (wasOnboarded) {
+                  // Firestore timed out / offline but user has onboarded before — skip onboarding
+                  setUser(buildUser(firebaseUser));
+                  setHasCompletedOnboarding(true);
+                } else {
+                  // Genuinely new user
+                  setUser(buildUser(firebaseUser));
+                  setHasCompletedOnboarding(false);
+                }
               }
             } catch (e) {
-              setUser(null);
+              console.error("Auth state error:", e);
+              setUser(buildUser(firebaseUser));
+              setHasCompletedOnboarding(false);
             }
           } else {
             setUser(null);
           }
-          setAuthLoading(false);
+          if (mounted) setAuthLoading(false);
         });
       } catch (err) {
         if (mounted) setAuthLoading(false);
@@ -193,10 +222,11 @@ const App: React.FC = () => {
     };
 
     initAuth();
-    
+
     return () => {
       mounted = false;
       clearTimeout(timeoutId);
+      if (unsubscribe) unsubscribe();
     };
   }, []);
 
@@ -225,19 +255,32 @@ const App: React.FC = () => {
   };
 
   const handleLoginSuccess = async (method: string, ageEligibleForPayouts: boolean, data?: any) => {
-    if (isMock || method === 'mobile') {
+    if (isMock) {
         createDemoUser(ageEligibleForPayouts, data);
         return;
     }
 
+    if (method === 'mobile') {
+        // Firebase phone auth already completed in Auth.tsx (confirmationResult.confirm() succeeded).
+        // onAuthStateChanged fires automatically — just show the loading screen.
+        setAuthLoading(true);
+        return;
+    }
+
+    // Google sign-in
+    setAuthLoading(true);
     try {
-      await auth.signInWithPopup(googleProvider);
+      await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
-      createDemoUser(ageEligibleForPayouts, data);
+      setAuthLoading(false);
+      const cancelled = error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request';
+      if (!cancelled) {
+        setNotification('Google sign-in failed. Please try again.');
+      }
     }
   };
 
-  const handleOnboardingComplete = async (data: any) => {
+  const handleOnboardingComplete = (data: any) => {
     if (!user) return;
     const updatedUser: UserType = { 
         ...user, 
@@ -245,26 +288,38 @@ const App: React.FC = () => {
         isVerified: false,
         createdAt: new Date().toISOString()
     };
-    try {
-        if (!isMock && auth.currentUser) {
-             updatedUser.email = auth.currentUser.email || undefined;
-             await db.collection('users').doc(user.id).set(updatedUser);
-        }
-    } catch (e) {}
+    // Update UI immediately — don't block on Firestore (it may be offline/slow)
     setUser(updatedUser);
     setHasCompletedOnboarding(true);
+    if (!isMock) localStorage.setItem(`onboarded_${updatedUser.id}`, '1');
+    // Fire-and-forget save in background
+    if (!isMock) {
+        // Omit undefined/empty fields — Firestore rejects undefined values
+        const docData: Partial<UserType> = { ...updatedUser };
+        if (!docData.email) delete docData.email;
+        setDoc(doc(db, "users", user.id), docData, { merge: true })
+            .catch(e => console.error("Failed to save onboarding data:", e));
+    }
   };
 
   const handleUpdateProfile = async (updatedData: Partial<UserType>) => {
     if (!user) return;
     const newUser = { ...user, ...updatedData };
-    try {
-      if (!isMock && auth.currentUser) {
-        await db.collection('users').doc(user.id).update(updatedData);
-      }
-    } catch (e) {}
+    // Update UI immediately
     setUser(newUser);
     setNotification('Profile updated!');
+    // Fire-and-forget save
+    if (!isMock) {
+        // Strip undefined fields — Firestore rejects them
+        const cleanData = Object.fromEntries(
+            Object.entries(updatedData).filter(([, v]) => v !== undefined)
+        );
+        updateDoc(doc(db, "users", user.id), cleanData)
+            .catch(e => {
+                console.error("Failed to update profile:", e);
+                setNotification('Changes saved locally (will sync when online).');
+            });
+    }
   };
 
   const handleShareProfile = async () => {
@@ -312,7 +367,11 @@ const App: React.FC = () => {
 
   const handleLogout = async () => {
       try {
-        if (auth.currentUser) await auth.signOut();
+        const isDemoUser = user?.id?.startsWith('demo-user-');
+        if (user && !isDemoUser) {
+            if (user.id) localStorage.removeItem(`onboarded_${user.id}`);
+            await signOut(auth);
+        }
       } catch (e) {}
       setUser(null);
       setActiveTab(Tab.HOME);

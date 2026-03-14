@@ -55,7 +55,7 @@ const MOCK_PINCODES: Record<string, { city: string, state: string }> = {
     '70': { city: 'Kolkata', state: 'West Bengal' },
 };
 
-type SettingsView = 'menu' | 'account' | 'notifications' | 'appearance' | 'privacy' | 'help' | 'about' | 'refresh-hub' | 'buying' | 'selling' | 'shipping' | 'legal' | 'privacy-policy' | 'terms-conditions';
+type SettingsView = 'menu' | 'account' | 'notifications' | 'privacy' | 'help' | 'about' | 'refresh-hub' | 'buying' | 'selling' | 'shipping' | 'legal' | 'privacy-policy' | 'terms-conditions';
 
 // --- Sub-Components ---
 
@@ -77,7 +77,6 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
   const menuItems = [
     { id: 'account', label: 'Account', icon: UserIcon, view: 'account' as SettingsView },
     { id: 'notifications', label: 'Notifications', icon: Bell, view: 'notifications' as SettingsView },
-    { id: 'appearance', label: 'Appearance', icon: Eye, view: 'appearance' as SettingsView },
     { id: 'privacy', label: 'Privacy & Security', icon: Lock, view: 'privacy' as SettingsView },
     { id: 'help', label: 'Help and Support', icon: Headphones, view: 'help' as SettingsView },
     { id: 'about', label: 'About', icon: Info, view: 'about' as SettingsView },
@@ -1638,8 +1637,6 @@ export const Settings: React.FC<SettingsProps> = ({ currentUser, onUpdateUser, o
         return <AccountView currentUser={currentUser} onUpdateUser={onUpdateUser} onBackToMenu={() => setCurrentView('menu')} />;
       case 'notifications': 
         return <NotificationsView onBack={() => setCurrentView('menu')} />;
-      case 'appearance': 
-        return <PlaceholderView title="Appearance" onBack={() => setCurrentView('menu')} />;
       case 'privacy': 
         return <PrivacySecurityView onBack={() => setCurrentView('menu')} />;
       case 'help': 

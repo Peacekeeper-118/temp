@@ -1,27 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Plus, Edit2, Trash2, Phone, MapPin, Home, Briefcase, Globe } from 'lucide-react';
-
-// --- Types & Interfaces ---
-// Defining these locally to ensure the code runs immediately. 
-// You can move these to your ../types file later.
-
-export interface Address {
-  id: string;
-  fullName: string;
-  mobile: string;
-  line1: string;
-  line2?: string;
-  landmark?: string;
-  pincode: string;
-  city: string;
-  state: string;
-  type: 'Home' | 'Work' | 'Other';
-  isDefault: boolean;
-}
-
-export interface User {
-  addresses?: Address[];
-}
+import { Address, User } from '../types';
 
 interface YourAddressesScreenProps {
   user: User;

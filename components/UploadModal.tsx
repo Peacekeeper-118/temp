@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { X, ArrowRight, AlertTriangle, Loader2, ChevronLeft, Sparkles, Check, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { Button } from './Button';
 import { sanitizeContent } from '../services/moderationService';
-import { storage, auth } from '../services/firebase';
+import { auth } from '../services/firebase';
 import { NeoCamera, NeoSparkles, NeoFire, NeoTag } from './NeoIcons';
 import { ImageMetadata } from '../types';
 

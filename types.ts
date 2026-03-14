@@ -27,6 +27,7 @@ export interface User {
   bio?: string;
   instagramHandle?: string;
   email?: string;
+  phoneNumber?: string;
   createdAt?: string;
   savedPostIds?: string[]; // New: Wishlist
   // Seller & Verification

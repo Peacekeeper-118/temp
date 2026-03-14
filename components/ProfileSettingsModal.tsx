@@ -43,6 +43,8 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
     if (isOpen) {
       setError(null);
       setAddress(currentUser.addresses?.[0] || defaultAddress);
+    } else {
+      setError(null);
     }
   }, [isOpen, currentUser]);
 
@@ -118,6 +120,9 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
                       <div className="relative border-b-2 border-earth-100">
                           <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-earth-900" />
                           <input 
+                              id="profile-fullname"
+                              name="fullName"
+                              autoComplete="name"
                               value={address.fullName}
                               onChange={(e) => setAddress(prev => ({...prev, fullName: e.target.value}))}
                               className="w-full bg-transparent pl-12 pr-4 py-4 font-black text-sm text-earth-900 outline-none placeholder:text-earth-400 placeholder:font-bold"
@@ -127,6 +132,9 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
                       <div className="relative">
                           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-earth-900" />
                           <input 
+                              id="profile-mobile"
+                              name="mobile"
+                              autoComplete="tel"
                               value={address.mobile}
                               onChange={(e) => setAddress(prev => ({...prev, mobile: e.target.value.replace(/\D/g, '').slice(0, 10)}))}
                               className="w-full bg-transparent pl-12 pr-4 py-4 font-black text-sm text-earth-900 outline-none placeholder:text-earth-400 placeholder:font-bold"
@@ -142,8 +150,11 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
                   <h4 className="text-[10px] font-black text-earth-900 uppercase tracking-widest opacity-60 ml-1">Address & Location</h4>
                   <div className="grid grid-cols-2 gap-3">
                       <div className="bg-earth-50 rounded-2xl px-5 py-4 border-2 border-earth-100 relative focus-within:border-earth-900 focus-within:bg-white transition-all">
-                          <label className="text-[10px] font-black text-earth-900 uppercase block mb-1">Pincode</label>
+                          <label htmlFor="profile-pincode" className="text-[10px] font-black text-earth-900 uppercase block mb-1">Pincode</label>
                           <input 
+                              id="profile-pincode"
+                              name="pincode"
+                              autoComplete="postal-code"
                               value={address.pincode}
                               onChange={(e) => handlePincodeChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
                               className="w-full bg-transparent font-black text-base text-earth-900 outline-none"
@@ -152,8 +163,11 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
                           {isPincodeLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-earth-900"/>}
                       </div>
                       <div className="bg-earth-50 rounded-2xl px-5 py-4 border-2 border-earth-100 focus-within:border-earth-900 focus-within:bg-white transition-all">
-                          <label className="text-[10px] font-black text-earth-900 uppercase block mb-1">City</label>
+                          <label htmlFor="profile-city" className="text-[10px] font-black text-earth-900 uppercase block mb-1">City</label>
                           <input 
+                              id="profile-city"
+                              name="city"
+                              autoComplete="address-level2"
                               value={address.city}
                               onChange={(e) => setAddress(prev => ({...prev, city: e.target.value}))}
                               className="w-full bg-transparent font-black text-base text-earth-900 outline-none placeholder:text-earth-400"
@@ -164,12 +178,18 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
                   
                   <div className="bg-earth-50 p-5 rounded-2xl border-2 border-earth-100 space-y-5 focus-within:bg-white transition-all">
                       <input 
+                          id="profile-line1"
+                          name="line1"
+                          autoComplete="address-line1"
                           value={address.line1}
                           onChange={(e) => setAddress(prev => ({...prev, line1: e.target.value}))}
                           className="w-full bg-transparent border-b-2 border-earth-100 pb-3 font-black text-sm text-earth-900 outline-none focus:border-earth-900"
                           placeholder="Flat, House no., Building, Apartment"
                       />
                       <input 
+                          id="profile-line2"
+                          name="line2"
+                          autoComplete="address-line2"
                           value={address.line2}
                           onChange={(e) => setAddress(prev => ({...prev, line2: e.target.value}))}
                           className="w-full bg-transparent border-b-2 border-earth-100 pb-3 font-black text-sm text-earth-900 outline-none focus:border-earth-900"
@@ -177,12 +197,17 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
                       />
                       <div className="grid grid-cols-2 gap-4">
                           <input 
+                              id="profile-landmark"
+                              name="landmark"
                               value={address.landmark}
                               onChange={(e) => setAddress(prev => ({...prev, landmark: e.target.value}))}
                               className="w-full bg-transparent font-black text-sm text-earth-900 outline-none placeholder:text-earth-400"
                               placeholder="Landmark (Optional)"
                           />
                           <input 
+                              id="profile-state"
+                              name="state"
+                              autoComplete="address-level1"
                               value={address.state}
                               onChange={(e) => setAddress(prev => ({...prev, state: e.target.value}))}
                               className="w-full bg-transparent font-black text-sm text-earth-900 outline-none text-right placeholder:text-earth-400"
@@ -203,7 +228,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOp
                       ].map((t) => (
                           <button
                               key={t.id}
-                              onClick={() => setAddress(prev => ({...prev, type: t.id as any}))}
+                              onClick={() => setAddress(prev => ({...prev, type: t.id as 'Home' | 'Work' | 'Other'}))}
                               className={`flex-1 py-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 ${
                                   address.type === t.id 
                                   ? 'bg-earth-900 text-white shadow-xl scale-100' 

@@ -65,6 +65,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     }
   }, [username, avatarFile]);
 
+  // Revoke blob URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (avatarUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(avatarUrl);
+      }
+    };
+  }, [avatarUrl]);
+
   const slides = [
     {
       id: 1,
@@ -229,7 +238,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
                       <div className="space-y-6 mb-8">
                           <div>
-                              <label className="block text-xs font-black text-earth-900 uppercase tracking-wide mb-1 ml-1">Username <span className="text-pop-rose">*</span></label>
+                              <label htmlFor="onboarding-username" className="block text-xs font-black text-earth-900 uppercase tracking-wide mb-1 ml-1">Username <span className="text-pop-rose">*</span></label>
                               <div className={`relative flex items-center bg-earth-50 border-2 rounded-2xl transition-all ${
                                   usernameStatus === 'taken' ? 'border-pop-rose' : 
                                   usernameStatus === 'available' ? 'border-pop-lime' : 
@@ -237,6 +246,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                               }`}>
                                   <span className="pl-4 text-earth-500 font-bold text-lg">@</span>
                                   <input 
+                                      id="onboarding-username"
+                                      name="username"
+                                      autoComplete="username"
                                       value={username}
                                       onChange={(e) => handleUsernameChange(e.target.value)}
                                       className="w-full bg-transparent py-4 pl-1 pr-12 font-black text-lg text-earth-900 outline-none placeholder:text-earth-400"
@@ -303,10 +315,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
   if (setupStep === 2) {
       return (
-          <div className="min-h-screen bg-[#FAFAF9] flex flex-col items-center justify-center p-6 animate-slide-in-right">
+          <div className="min-h-screen bg-[#FAFAF9] flex flex-col items-center justify-center p-6 overflow-y-auto animate-slide-in-right">
               <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-xl p-8 border border-earth-100 relative overflow-hidden flex flex-col max-h-[90vh]">
                   
-                  <div className="relative z-10 flex flex-col h-full overflow-hidden">
+                  <div className="relative z-10 flex flex-col flex-1 min-h-0">
                       <div className="mb-6 shrink-0">
                           <h2 className="font-display font-black text-3xl text-earth-900 mb-1">Shipping Details 📦</h2>
                           <p className="text-earth-800 text-sm font-bold mb-3">Where should we send your finds?</p>
@@ -325,6 +337,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                   <div className="relative border-b border-earth-100">
                                       <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-earth-900" />
                                       <input 
+                                          id="onboarding-fullname"
+                                          name="fullName"
+                                          autoComplete="name"
                                           value={address.fullName}
                                           onChange={(e) => handleAddressChange('fullName', e.target.value)}
                                           className="w-full bg-transparent pl-12 pr-4 py-4 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 placeholder:font-bold"
@@ -334,6 +349,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                   <div className="relative">
                                       <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-earth-900" />
                                       <input 
+                                          id="onboarding-mobile"
+                                          name="mobile"
+                                          autoComplete="tel"
                                           value={address.mobile}
                                           onChange={(e) => handleAddressChange('mobile', e.target.value.replace(/\D/g, '').slice(0, 10))}
                                           className="w-full bg-transparent pl-12 pr-4 py-4 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 placeholder:font-bold"
@@ -353,8 +371,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                               
                               <div className="grid grid-cols-2 gap-3">
                                   <div className="bg-earth-50 rounded-2xl px-4 py-3 border border-earth-100 relative">
-                                      <label className="text-[10px] font-black text-earth-900 uppercase tracking-wide block mb-1">Pincode</label>
+                                      <label htmlFor="onboarding-pincode" className="text-[10px] font-black text-earth-900 uppercase tracking-wide block mb-1">Pincode</label>
                                       <input 
+                                          id="onboarding-pincode"
+                                          name="pincode"
+                                          autoComplete="postal-code"
                                           value={address.pincode}
                                           onChange={(e) => handlePincodeChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                           className="w-full bg-transparent font-black text-earth-900 outline-none placeholder:text-earth-500"
@@ -365,8 +386,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                       {isPincodeLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-earth-900"/>}
                                   </div>
                                   <div className="bg-earth-50 rounded-2xl px-4 py-3 border border-earth-100">
-                                      <label className="text-[10px] font-black text-earth-900 uppercase tracking-wide block mb-1">City</label>
+                                      <label htmlFor="onboarding-city" className="text-[10px] font-black text-earth-900 uppercase tracking-wide block mb-1">City</label>
                                       <input 
+                                          id="onboarding-city"
+                                          name="city"
+                                          autoComplete="address-level2"
                                           value={address.city}
                                           onChange={(e) => handleAddressChange('city', e.target.value)}
                                           className="w-full bg-transparent font-black text-earth-900 outline-none placeholder:text-earth-500"
@@ -377,12 +401,18 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
 
                               <div className="bg-earth-50 p-4 rounded-2xl border border-earth-100 space-y-4">
                                   <input 
+                                      id="onboarding-line1"
+                                      name="line1"
+                                      autoComplete="address-line1"
                                       value={address.line1}
                                       onChange={(e) => handleAddressChange('line1', e.target.value)}
                                       className="w-full bg-transparent border-b border-earth-300 pb-2 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 focus:border-earth-600 transition-colors"
                                       placeholder="Flat, House no., Building, Apartment"
                                   />
                                   <input 
+                                      id="onboarding-line2"
+                                      name="line2"
+                                      autoComplete="address-line2"
                                       value={address.line2}
                                       onChange={(e) => handleAddressChange('line2', e.target.value)}
                                       className="w-full bg-transparent border-b border-earth-300 pb-2 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 focus:border-earth-600 transition-colors"
@@ -390,12 +420,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                   />
                                   <div className="grid grid-cols-2 gap-4">
                                       <input 
+                                          id="onboarding-landmark"
+                                          name="landmark"
                                           value={address.landmark}
                                           onChange={(e) => handleAddressChange('landmark', e.target.value)}
                                           className="w-full bg-transparent font-black text-sm text-earth-900 outline-none placeholder:text-earth-500"
                                           placeholder="Landmark"
                                       />
                                       <input 
+                                          id="onboarding-state"
+                                          name="state"
+                                          autoComplete="address-level1"
                                           value={address.state}
                                           onChange={(e) => handleAddressChange('state', e.target.value)}
                                           className="w-full bg-transparent font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 text-right"
@@ -415,7 +450,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
                                   ].map((t) => (
                                       <button
                                           key={t.id}
-                                          onClick={() => handleAddressChange('type', t.id as any)}
+                                          onClick={() => handleAddressChange('type', t.id as 'Home' | 'Work' | 'Other')}
                                           className={`flex-1 py-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2 ${
                                               address.type === t.id 
                                               ? 'bg-earth-900 text-white shadow-sm border border-earth-900' 
@@ -504,5 +539,5 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
               </div>
           </div>
       </div>
-  )
+  );
 };

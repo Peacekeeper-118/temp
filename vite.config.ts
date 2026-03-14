@@ -8,6 +8,11 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        headers: {
+          // Required for Firebase signInWithPopup to communicate with the Google popup window
+          'Cross-Origin-Opener-Policy': 'unsafe-none',
+          'Cross-Origin-Embedder-Policy': 'unsafe-none',
+        },
       },
       plugins: [react()],
       define: {

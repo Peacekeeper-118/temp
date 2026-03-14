@@ -13,5 +13,14 @@
 
   "agents": {
     "memory": true
+  },
+
+  "firebase": {
+    "apiKey": "AIzaSyChSaZ59CfZ8XbYWygSvnly4lXZaPzeO20",
+    "authDomain": "revendre-341ef.firebaseapp.com",
+    "projectId": "revendre-341ef",
+    "storageBucket": "revendre-341ef.firebasestorage.app",
+    "messagingSenderId": "524420025693",
+    "appId": "1:524420025693:web:b41588d6a649ad4f3fecb4"
   }
 }

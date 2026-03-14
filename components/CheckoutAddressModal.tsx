@@ -133,6 +133,9 @@ export const CheckoutAddressModal: React.FC<CheckoutAddressModalProps> = ({ isOp
                             <div className="relative border-b border-earth-200">
                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-earth-900" />
                                 <input 
+                                    id="checkout-fullname"
+                                    name="fullName"
+                                    autoComplete="name"
                                     value={formData.fullName}
                                     onChange={(e) => setFormData(prev => ({...prev, fullName: e.target.value}))}
                                     className="w-full bg-transparent pl-12 pr-4 py-4 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 placeholder:font-bold"
@@ -142,6 +145,9 @@ export const CheckoutAddressModal: React.FC<CheckoutAddressModalProps> = ({ isOp
                             <div className="relative">
                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-earth-900" />
                                 <input 
+                                    id="checkout-mobile"
+                                    name="mobile"
+                                    autoComplete="tel"
                                     value={formData.mobile}
                                     onChange={(e) => setFormData(prev => ({...prev, mobile: e.target.value.replace(/\D/g, '').slice(0, 10)}))}
                                     className="w-full bg-transparent pl-12 pr-4 py-4 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 placeholder:font-bold"
@@ -156,8 +162,11 @@ export const CheckoutAddressModal: React.FC<CheckoutAddressModalProps> = ({ isOp
                         <h4 className="text-xs font-black text-earth-900 uppercase tracking-widest flex items-center gap-2"><MapPin className="w-3 h-3"/> Location</h4>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="bg-earth-50 rounded-2xl px-4 py-3 border border-earth-200 relative">
-                                <label className="text-[10px] font-black text-earth-900 uppercase block mb-1">Pincode</label>
+                                <label htmlFor="checkout-pincode" className="text-[10px] font-black text-earth-900 uppercase block mb-1">Pincode</label>
                                 <input 
+                                    id="checkout-pincode"
+                                    name="pincode"
+                                    autoComplete="postal-code"
                                     value={formData.pincode}
                                     onChange={(e) => handlePincodeChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                     className="w-full bg-transparent font-black text-earth-900 outline-none placeholder:text-earth-500"
@@ -166,8 +175,11 @@ export const CheckoutAddressModal: React.FC<CheckoutAddressModalProps> = ({ isOp
                                 {isPincodeLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-earth-900"/>}
                             </div>
                             <div className="bg-earth-50 rounded-2xl px-4 py-3 border border-earth-200">
-                                <label className="text-[10px] font-black text-earth-900 uppercase block mb-1">City</label>
+                                <label htmlFor="checkout-city" className="text-[10px] font-black text-earth-900 uppercase block mb-1">City</label>
                                 <input 
+                                    id="checkout-city"
+                                    name="city"
+                                    autoComplete="address-level2"
                                     value={formData.city}
                                     onChange={(e) => setFormData(prev => ({...prev, city: e.target.value}))}
                                     className="w-full bg-transparent font-black text-earth-900 outline-none placeholder:text-earth-500"
@@ -177,12 +189,18 @@ export const CheckoutAddressModal: React.FC<CheckoutAddressModalProps> = ({ isOp
                         </div>
                         <div className="bg-earth-50 p-4 rounded-2xl border border-earth-200 space-y-4">
                             <input 
+                                id="checkout-line1"
+                                name="line1"
+                                autoComplete="address-line1"
                                 value={formData.line1}
                                 onChange={(e) => setFormData(prev => ({...prev, line1: e.target.value}))}
                                 className="w-full bg-transparent border-b border-earth-300 pb-2 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500"
                                 placeholder="Flat, House no., Building"
                             />
                             <input 
+                                id="checkout-line2"
+                                name="line2"
+                                autoComplete="address-line2"
                                 value={formData.line2}
                                 onChange={(e) => setFormData(prev => ({...prev, line2: e.target.value}))}
                                 className="w-full bg-transparent border-b border-earth-300 pb-2 font-black text-sm text-earth-900 outline-none placeholder:text-earth-500"
@@ -190,12 +208,17 @@ export const CheckoutAddressModal: React.FC<CheckoutAddressModalProps> = ({ isOp
                             />
                             <div className="grid grid-cols-2 gap-4 pt-1">
                                 <input 
+                                    id="checkout-landmark"
+                                    name="landmark"
                                     value={formData.landmark}
                                     onChange={(e) => setFormData(prev => ({...prev, landmark: e.target.value}))}
                                     className="w-full bg-transparent font-black text-sm text-earth-900 outline-none placeholder:text-earth-500"
                                     placeholder="Landmark"
                                 />
                                 <input 
+                                    id="checkout-state"
+                                    name="state"
+                                    autoComplete="address-level1"
                                     value={formData.state}
                                     onChange={(e) => setFormData(prev => ({...prev, state: e.target.value}))}
                                     className="w-full bg-transparent font-black text-sm text-earth-900 outline-none placeholder:text-earth-500 text-right"
@@ -215,7 +238,7 @@ export const CheckoutAddressModal: React.FC<CheckoutAddressModalProps> = ({ isOp
                             ].map((t) => (
                                 <button
                                     key={t.id}
-                                    onClick={() => setFormData(prev => ({...prev, type: t.id as any}))}
+                                    onClick={() => setFormData(prev => ({...prev, type: t.id as 'Home' | 'Work' | 'Other'}))}
                                     className={`flex-1 py-2 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2 ${
                                         formData.type === t.id 
                                         ? 'bg-earth-900 text-white shadow-md border border-earth-900' 
