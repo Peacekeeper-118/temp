@@ -42,7 +42,7 @@ export const functions = getFunctions(app);
 export const isMock = false;
 
 // Export auth functions for easier use
-export { signInWithPopup, signOut, onAuthStateChanged };
+export { signInWithPopup, signOut, onAuthStateChanged, deleteUser } from 'firebase/auth';
 export { signInWithPhoneNumber, RecaptchaVerifier } from 'firebase/auth';
 export type { User as FirebaseUser, ConfirmationResult } from 'firebase/auth';
 

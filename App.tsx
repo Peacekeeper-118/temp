@@ -21,7 +21,7 @@ import { ProductDetail } from './components/ProductDetail';
 import { Tab, Post, User as UserType, Category, Order, Address } from './types';
 import { MOCK_POSTS, CATEGORIES, MOCK_ORDERS } from './constants';
 import { Search, ShoppingBag, Trash2, ArrowRight, ShieldCheck, LogOut, SlidersHorizontal, Sparkles } from 'lucide-react';
-import { auth, googleProvider, db, isMock, signInWithPopup, onAuthStateChanged, signOut } from './services/firebase';
+import { auth, googleProvider, db, isMock, signInWithPopup, onAuthStateChanged, signOut, deleteUser } from './services/firebase';
 import { searchPosts } from './services/searchService';
 import { doc, setDoc, updateDoc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, limit, deleteDoc } from 'firebase/firestore';
 import { NeoSkateboard, NeoButterfly, NeoSparkles, NeoSneaker, NeoCassette, NeoFire, NeoBag, NeoGhost, NeoStar } from './components/NeoIcons';
@@ -418,6 +418,38 @@ const App: React.FC = () => {
       setActiveTab(Tab.HOME);
   };
 
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    
+    try {
+      if (!isMock && auth.currentUser) {
+        // 1. Delete user data from Firestore
+        await deleteDoc(doc(db, "users", user.id));
+        
+        // 2. Delete user account from Firebase Auth
+        await deleteUser(auth.currentUser);
+        
+        setNotification('Account deleted successfully.');
+      } else {
+        // Mock mode deletion
+        setNotification('Demo account "deleted" (mock).');
+      }
+      
+      // 3. Clear local state and go home
+      if (user.id) localStorage.removeItem(`onboarded_${user.id}`);
+      setUser(null);
+      setActiveTab(Tab.HOME);
+    } catch (error: any) {
+      console.error("Failed to delete account:", error);
+      if (error.code === 'auth/requires-recent-login') {
+        setNotification('Please log out and log back in to delete your account for security.');
+      } else {
+        setNotification('Failed to delete account. Please try again.');
+      }
+      throw error; // Re-throw to stop the loading state in Settings.tsx
+    }
+  };
+
   const handlePost = async (data: any) => {
     if (!user) return;
     
@@ -669,6 +701,7 @@ const App: React.FC = () => {
             <Settings 
                 currentUser={user} 
                 onUpdateUser={handleUpdateProfile} 
+                onDeleteAccount={handleDeleteAccount}
                 onBack={() => setActiveTab(Tab.PROFILE)} 
                 initialView={settingsView}
             />

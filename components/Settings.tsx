@@ -42,6 +42,7 @@ import { Button } from './Button';
 interface SettingsProps {
   currentUser: User;
   onUpdateUser: (updatedData: Partial<User>) => Promise<void>;
+  onDeleteAccount: () => Promise<void>;
   onBack: () => void;
   initialView?: SettingsView;
 }
@@ -129,13 +130,27 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
   );
 };
 
-const AccountView = ({ currentUser, onUpdateUser, onBackToMenu }: { 
+const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu }: { 
   currentUser: User, 
   onUpdateUser: (data: Partial<User>) => Promise<void>,
+  onDeleteAccount: () => Promise<void>,
   onBackToMenu: () => void 
 }) => {
   const [activeTab, setActiveTab] = useState<'account' | 'personal'>('account');
   const [showPassword, setShowPassword] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onDeleteAccount();
+    } catch (error) {
+      console.error("Delete failed", error);
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
@@ -198,7 +213,10 @@ const AccountView = ({ currentUser, onUpdateUser, onBackToMenu }: {
               <p className="text-sm text-earth-500 font-medium leading-tight pr-4">
                 Your account will be permanently removed from the application. All your data will be lost.
               </p>
-              <button className="w-full py-4 mt-2 bg-red-50 text-red-500 font-bold rounded-2xl active:scale-[0.98] transition-all">
+              <button 
+                onClick={() => setShowDeleteConfirm(true)}
+                className="w-full py-4 mt-2 bg-red-50 text-red-500 font-bold rounded-2xl active:scale-[0.98] transition-all"
+              >
                 Delete account
               </button>
             </div>
@@ -235,6 +253,41 @@ const AccountView = ({ currentUser, onUpdateUser, onBackToMenu }: {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-fade-in">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-sm p-8 shadow-2xl animate-scale-in">
+            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-6">
+              <ShieldAlert className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-2xl font-display font-black text-earth-900 mb-2">Delete Account?</h3>
+            <p className="text-earth-500 font-medium mb-8 leading-relaxed">
+              This action is permanent and cannot be undone. All your posts, orders, and profile data will be removed.
+            </p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => !isDeleting && setShowDeleteConfirm(false)}
+                className="flex-1 py-4 bg-earth-100 text-earth-900 font-bold rounded-2xl hover:bg-earth-200 transition-colors"
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleDelete}
+                className="flex-1 py-4 bg-red-500 text-white font-bold rounded-2xl hover:bg-red-600 shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  'Delete'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bottom Save Button */}
       <div className="px-6 py-8 mt-auto pb-12">
@@ -1627,14 +1680,14 @@ const AboutView = ({ onBack, onOpenPolicy }: { onBack: () => void; onOpenPolicy:
 
 // --- Main Settings Component ---
 
-export const Settings: React.FC<SettingsProps> = ({ currentUser, onUpdateUser, onBack, initialView = 'menu' }) => {
+export const Settings: React.FC<SettingsProps> = ({ currentUser, onUpdateUser, onDeleteAccount, onBack, initialView = 'menu' }) => {
   const [currentView, setCurrentView] = useState<SettingsView>(initialView);
   const [searchQuery, setSearchQuery] = useState('');
 
   const renderContent = () => {
     switch (currentView) {
       case 'account': 
-        return <AccountView currentUser={currentUser} onUpdateUser={onUpdateUser} onBackToMenu={() => setCurrentView('menu')} />;
+        return <AccountView currentUser={currentUser} onUpdateUser={onUpdateUser} onDeleteAccount={onDeleteAccount} onBackToMenu={() => setCurrentView('menu')} />;
       case 'notifications': 
         return <NotificationsView onBack={() => setCurrentView('menu')} />;
       case 'privacy': 
