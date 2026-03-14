@@ -140,6 +140,12 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
   const [showPassword, setShowPassword] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Form State
+  const [firstName, setFirstName] = useState((currentUser.displayName || '').split(' ')[0] || '');
+  const [lastName, setLastName] = useState((currentUser.displayName || '').split(' ').slice(1).join(' ') || '');
+  const [bio, setBio] = useState(currentUser.bio || '');
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -151,6 +157,28 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
       setShowDeleteConfirm(false);
     }
   };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      const updatedData: Partial<User> = {
+        displayName: `${firstName} ${lastName}`.trim(),
+        bio: bio
+      };
+      await onUpdateUser(updatedData);
+      setIsSaving(false);
+    } catch (error) {
+      console.error("Save failed", error);
+      setIsSaving(false);
+    }
+  };
+
+  const getWordCount = (text: string) => {
+    return text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+  };
+
+  const bioWordCount = getWordCount(bio);
+  const isBioValid = bioWordCount <= 1000;
 
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
@@ -222,12 +250,13 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 pb-24">
             <div className="border-b border-earth-100 pb-2">
               <label className="text-xs text-earth-400 font-medium block mb-1">First name</label>
               <input 
                 type="text" 
-                defaultValue={(currentUser.displayName || '').split(' ')[0] || ''} 
+                value={firstName} 
+                onChange={(e) => setFirstName(e.target.value)}
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
                 placeholder="Enter first name"
               />
@@ -236,7 +265,8 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
               <label className="text-xs text-earth-400 font-medium block mb-1">Last name</label>
               <input 
                 type="text" 
-                defaultValue={(currentUser.displayName || '').split(' ').slice(1).join(' ') || ''} 
+                value={lastName} 
+                onChange={(e) => setLastName(e.target.value)}
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
                 placeholder="Enter last name"
               />
@@ -245,10 +275,32 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
               <label className="text-xs text-earth-400 font-medium block mb-1">Phone number</label>
               <input 
                 type="tel" 
-                defaultValue={currentUser.addresses?.[0]?.mobile || ''} 
+                defaultValue={currentUser.addresses?.[0]?.mobile || currentUser.phoneNumber || ''} 
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
                 placeholder="Enter phone number"
+                disabled
               />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-xs text-earth-400 font-medium block">Bio</label>
+                <span className={`text-[10px] font-bold ${isBioValid ? 'text-earth-300' : 'text-red-500'}`}>
+                  {bioWordCount} / 1000 words
+                </span>
+              </div>
+              <textarea 
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                rows={6}
+                className={`w-full bg-[#F9F9F9] p-4 rounded-2xl text-sm font-medium text-earth-900 outline-none transition-all border-2 ${isBioValid ? 'border-transparent focus:border-earth-100' : 'border-red-100 focus:border-red-200'}`}
+                placeholder="Tell the community about your style..."
+              />
+              {!isBioValid && (
+                <p className="text-[10px] text-red-500 font-bold flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3" /> Bio exceeds 1000 word limit
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -290,9 +342,13 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
       )}
 
       {/* Bottom Save Button */}
-      <div className="px-6 py-8 mt-auto pb-12">
-        <button className="w-full py-4 bg-black text-white font-bold rounded-full active:scale-[0.98] transition-all shadow-lg">
-          Save
+      <div className="px-6 py-8 mt-auto pb-12 bg-white/80 backdrop-blur-md sticky bottom-0 border-t border-earth-50">
+        <button 
+          onClick={handleSave}
+          disabled={isSaving || !isBioValid}
+          className="w-full py-4 bg-black text-white font-bold rounded-full active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100"
+        >
+          {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save'}
         </button>
       </div>
     </div>

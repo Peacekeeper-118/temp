@@ -54,7 +54,8 @@ export const Profile: React.FC<ProfileProps> = ({ user, posts, savedPosts = [], 
                   </div>
               </div>
               
-              <h2 className="font-display font-black text-2xl text-earth-900 mb-1">{user.displayName || user.username}</h2>
+              <h2 className="font-display font-black text-2xl text-earth-900 mb-1">@{user.username || 'user'}</h2>
+              {user.displayName && <p className="text-earth-400 text-xs font-bold mb-1">{user.displayName}</p>}
               <p className="text-earth-500 text-sm font-bold mb-4">{user.bio || 'No bio yet.'}</p>
               
               <div className="flex justify-center items-center gap-6 py-4 border-t border-earth-100 mb-4 border-dashed">
