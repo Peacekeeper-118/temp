@@ -2,8 +2,9 @@
 import React, { useState, useRef } from 'react';
 import { X, ArrowRight, AlertTriangle, Loader2, ChevronLeft, Sparkles, Check, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { Button } from './Button';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage, auth } from '../services/firebase';
 import { sanitizeContent } from '../services/moderationService';
-import { auth } from '../services/firebase';
 import { NeoCamera, NeoSparkles, NeoFire, NeoTag } from './NeoIcons';
 import { ImageMetadata } from '../types';
 
@@ -60,8 +61,22 @@ export const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, onPos
   };
 
   const uploadImages = async (): Promise<string[]> => {
-      return imagePreviews.filter((url): url is string => !!url);
-  }
+    const urls: string[] = [];
+    for (const file of imageFiles) {
+      if (file) {
+        try {
+          const storageRef = ref(storage, `posts/${auth.currentUser?.uid || 'anonymous'}/${Date.now()}-${file.name}`);
+          const snapshot = await uploadBytes(storageRef, file);
+          const downloadURL = await getDownloadURL(snapshot.ref);
+          urls.push(downloadURL);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          throw error;
+        }
+      }
+    }
+    return urls;
+  };
 
   const handlePublish = async () => {
     const { hasViolation, warning: modWarning } = sanitizeContent(description);

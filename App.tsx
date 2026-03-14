@@ -23,7 +23,7 @@ import { MOCK_POSTS, CATEGORIES, MOCK_ORDERS } from './constants';
 import { Search, ShoppingBag, Trash2, ArrowRight, ShieldCheck, LogOut, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { auth, googleProvider, db, isMock, signInWithPopup, onAuthStateChanged, signOut } from './services/firebase';
 import { searchPosts } from './services/searchService';
-import { doc, setDoc, updateDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, getDoc, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, limit, deleteDoc } from 'firebase/firestore';
 import { NeoSkateboard, NeoButterfly, NeoSparkles, NeoSneaker, NeoCassette, NeoFire, NeoBag, NeoGhost, NeoStar } from './components/NeoIcons';
 import { Button } from './components/Button';
 
@@ -230,6 +230,47 @@ const App: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isMock) return;
+
+    // Remove orderBy to avoid composite index requirement if Firestore isn't indexed yet
+    const postsQuery = query(
+      collection(db, 'posts'),
+      limit(50)
+    );
+
+    const unsubscribe = onSnapshot(postsQuery, (snapshot) => {
+      console.log("Posts snapshot received, count:", snapshot.docs.length);
+      const fetchedPosts = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore timestamp to ISO string if it exists
+          createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : data.createdAt
+        };
+      }) as Post[];
+      
+      // Sort locally since we removed it from the query
+      fetchedPosts.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+      });
+
+      setPosts(prevPosts => {
+        const realIds = new Set(fetchedPosts.map(p => p.id));
+        const uniqueMocks = MOCK_POSTS.filter(mp => !realIds.has(mp.id));
+        return [...fetchedPosts, ...uniqueMocks];
+      });
+    }, (error) => {
+      console.error("Error fetching posts:", error);
+      setNotification("Firestore error: " + error.message);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const createDemoUser = (ageEligibleForPayouts: boolean, data?: { phoneNumber?: string, isSignup?: boolean }) => {
       const demoId = `demo-user-${Date.now()}`;
       const newDemoUser: UserType = {
@@ -377,12 +418,18 @@ const App: React.FC = () => {
       setActiveTab(Tab.HOME);
   };
 
-  const handlePost = (data: any) => {
+  const handlePost = async (data: any) => {
     if (!user) return;
-    const newPost: Post = {
-        id: `new-${Date.now()}`,
+    
+    const newPostData: any = {
         type: 'LISTING',
-        user: user,
+        user: {
+            id: user.id,
+            username: user.username,
+            displayName: user.displayName,
+            avatarUrl: user.avatarUrl,
+            isVerified: user.isVerified
+        },
         imageUrl: data.images[0] || 'https://picsum.photos/800/800',
         additionalImages: data.images,
         description: data.caption,
@@ -402,7 +449,22 @@ const App: React.FC = () => {
         color: data.color,
         measurements: data.measurements
     };
-    setPosts([newPost, ...posts]);
+
+    if (isMock) {
+        setPosts([{ id: `new-${Date.now()}`, ...newPostData }, ...posts]);
+    } else {
+        try {
+            await addDoc(collection(db, 'posts'), {
+                ...newPostData,
+                createdAt: serverTimestamp()
+            });
+            setNotification('Post published successfully!');
+        } catch (error) {
+            console.error("Error adding post: ", error);
+            setNotification('Failed to publish post.');
+        }
+    }
+    
     setIsUploadOpen(false);
     setActiveTab(Tab.HOME); 
   };
@@ -417,8 +479,18 @@ const App: React.FC = () => {
       setCart(cart.filter(item => item.id !== postId));
   };
 
-  const handleDeletePost = (postId: string) => {
+  const handleDeletePost = async (postId: string) => {
+    if (isMock) {
       setPosts(posts.filter(post => post.id !== postId));
+    } else {
+      try {
+        await deleteDoc(doc(db, 'posts', postId));
+        setNotification('Post deleted successfully!');
+      } catch (error) {
+        console.error("Error deleting post: ", error);
+        setNotification('Failed to delete post.');
+      }
+    }
   };
 
   const handleInitiateCheckout = () => {
