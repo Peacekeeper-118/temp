@@ -81,6 +81,9 @@ export interface Post {
   color?: string;
   measurements?: string;
   isAdminPost?: boolean; // New: Official Updates
+  moderationStatus?: 'pending' | 'approved' | 'rejected';
+  moderationNote?: string;
+  moderationUpdatedAt?: string;
 }
 
 export interface Offer {

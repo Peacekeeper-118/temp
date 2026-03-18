@@ -59,6 +59,8 @@ const MOCK_PINCODES: Record<string, { city: string, state: string }> = {
 };
 
 type SettingsView = 'menu' | 'account' | 'notifications' | 'privacy' | 'help' | 'about' | 'refresh-hub' | 'buying' | 'selling' | 'shipping' | 'legal' | 'privacy-policy' | 'terms-conditions';
+type HelpSupportSubView = 'menu' | 'blocked' | 'report-user' | 'report-product' | 'contact';
+type SearchResultView = SettingsView | 'help-blocked' | 'help-report-user' | 'help-report-product' | 'help-contact';
 
 // --- Sub-Components ---
 
@@ -73,10 +75,19 @@ const Toggle = ({ active, onToggle }: { active: boolean, onToggle: () => void })
 
 const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: { 
   onBack: () => void, 
-  onNavigate: (view: SettingsView) => void,
+  onNavigate: (view: SearchResultView) => void,
   searchQuery: string,
   onSearchChange: (val: string) => void
 }) => {
+  type SearchItem = {
+    id: string;
+    label: string;
+    icon: React.ComponentType<any>;
+    view: SearchResultView;
+    parentLabel?: string;
+    searchTerms?: string[];
+  };
+
   const menuItems = [
     { id: 'account', label: 'Account', icon: UserIcon, view: 'account' as SettingsView },
     { id: 'notifications', label: 'Notifications', icon: Bell, view: 'notifications' as SettingsView },
@@ -85,9 +96,42 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
     { id: 'about', label: 'About', icon: Info, view: 'about' as SettingsView },
   ];
 
-  const filteredItems = menuItems.filter(item => 
-    item.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const searchItems: SearchItem[] = [
+    ...menuItems,
+    { id: 'account-data', label: 'Account Data', icon: UserIcon, view: 'account', parentLabel: 'Account', searchTerms: ['email', 'password'] },
+    { id: 'personal-data', label: 'Personal Data', icon: UserIcon, view: 'account', parentLabel: 'Account', searchTerms: ['first name', 'last name', 'phone', 'bio', 'delete account'] },
+    { id: 'system-notifications', label: 'System Notifications', icon: Bell, view: 'notifications', parentLabel: 'Notifications', searchTerms: ['push', 'email', 'sms', 'updates'] },
+    { id: 'marketing-notifications', label: 'Marketing Notifications', icon: Bell, view: 'notifications', parentLabel: 'Notifications', searchTerms: ['offers', 'promotions', 'push', 'email', 'sms'] },
+    { id: 'reminders', label: 'Reminders', icon: Bell, view: 'notifications', parentLabel: 'Notifications' },
+    { id: 'private-account', label: 'Private Account', icon: Lock, view: 'privacy', parentLabel: 'Privacy & Security' },
+    { id: 'activity-status', label: 'Show Activity Status', icon: Activity, view: 'privacy', parentLabel: 'Privacy & Security' },
+    { id: 'whitelisted-users', label: 'Whitelisted Users', icon: UserCheck, view: 'privacy', parentLabel: 'Privacy & Security' },
+    { id: 'two-factor-auth', label: 'Two-Factor Authentication', icon: ShieldCheck, view: 'privacy', parentLabel: 'Privacy & Security', searchTerms: ['2fa'] },
+    { id: 'login-activity', label: 'Login Activity', icon: History, view: 'privacy', parentLabel: 'Privacy & Security' },
+    { id: 'security-checkup', label: 'Security Checkup', icon: Fingerprint, view: 'privacy', parentLabel: 'Privacy & Security' },
+    { id: 'tags-mentions', label: 'Tags & Mentions', icon: UserCheck, view: 'privacy', parentLabel: 'Privacy & Security' },
+    { id: 'blocked-users', label: 'Blocked Users', icon: UserX, view: 'help-blocked', parentLabel: 'Help and Support', searchTerms: ['block'] },
+    { id: 'report-user', label: 'Report a User', icon: ShieldAlert, view: 'help-report-user', parentLabel: 'Help and Support' },
+    { id: 'report-product', label: 'Report a Product', icon: Flag, view: 'help-report-product', parentLabel: 'Help and Support' },
+    { id: 'contact-support', label: 'Contact Customer Support', icon: MessageSquare, view: 'help-contact', parentLabel: 'Help and Support', searchTerms: ['support', 'help', 'contact us', 'live chat', 'callback'] },
+    { id: 'refresh-hub', label: 'Revendre Refresh Hub', icon: Sparkles, view: 'refresh-hub', parentLabel: 'About' },
+    { id: 'buying-policy', label: 'Buying on Revendre', icon: ShoppingCart, view: 'buying', parentLabel: 'About', searchTerms: ['buyer protection', 'escrow'] },
+    { id: 'selling-policy', label: 'Selling & Payouts', icon: DollarSign, view: 'selling', parentLabel: 'About', searchTerms: ['seller', 'commission', 'payout'] },
+    { id: 'shipping-policy', label: 'Shipping & Returns', icon: Truck, view: 'shipping', parentLabel: 'About', searchTerms: ['delivery', 'returns', '7-day return'] },
+    { id: 'legal-information', label: 'Legal Information', icon: ShieldCheck, view: 'legal', parentLabel: 'About' },
+    { id: 'privacy-policy', label: 'Privacy Policy', icon: FileText, view: 'privacy-policy', parentLabel: 'Legal Information', searchTerms: ['data', 'cookies', 'information'] },
+    { id: 'terms-conditions', label: 'Terms & Conditions', icon: ScrollText, view: 'terms-conditions', parentLabel: 'Legal Information', searchTerms: ['terms', 'conditions', 'legal'] }
+  ];
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredItems = normalizedQuery.length === 0
+    ? menuItems
+    : searchItems.filter(item =>
+        [item.label, item.parentLabel || '', ...(item.searchTerms || [])]
+          .join(' ')
+          .toLowerCase()
+          .includes(normalizedQuery)
+      );
 
   return (
     <div className="bg-white min-h-screen animate-fade-in">
@@ -118,10 +162,17 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
               className="w-full py-5 flex items-center justify-between group active:bg-earth-50 transition-colors border-b border-earth-50 last:border-0"
             >
               <div className="flex items-center gap-4">
-                <div className="p-1">
+              <div className="p-1">
                   <item.icon className="w-6 h-6 text-earth-900" strokeWidth={2} />
                 </div>
-                <span className="font-bold text-[17px] text-earth-900">{item.label}</span>
+                <div>
+                  <span className="font-bold text-[17px] text-earth-900">{item.label}</span>
+                  {normalizedQuery.length > 0 && (item as SearchItem).parentLabel && (
+                    <p className="text-[11px] text-earth-400 font-medium leading-tight">
+                      {(item as SearchItem).parentLabel}
+                    </p>
+                  )}
+                </div>
               </div>
               <ChevronRight className="w-5 h-5 text-earth-900 opacity-60 group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
             </button>
@@ -185,7 +236,7 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
       {/* Header */}
-      <div className="px-6 pt-12 pb-6">
+      <div className="px-6 pt-12 pb-4">
         <button onClick={onBackToMenu} className="mb-6 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
@@ -369,8 +420,8 @@ const NotificationsView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div className="min-h-screen bg-white animate-fade-in">
-      <div className="px-6 pt-12 pb-6">
-        <button onClick={onBack} className="mb-6 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
+      <div className="px-6 pt-8 pb-6">
+        <button onClick={onBack} className="mb-3 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
         <h1 className="text-3xl font-display font-black text-earth-900">Notifications</h1>
@@ -483,8 +534,8 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
       {/* Header */}
-      <div className="px-6 pt-12 pb-6">
-        <button onClick={onBack} className="mb-6 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
+      <div className="px-6 pt-8 pb-6">
+        <button onClick={onBack} className="mb-3 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
         <h1 className="text-3xl font-display font-black text-earth-900">Privacy & Security</h1>
@@ -641,8 +692,12 @@ const PlaceholderView = ({ title, onBack }: { title: string, onBack: () => void 
   </div>
 );
 
-const HelpSupportView = ({ onBack }: { onBack: () => void }) => {
-  const [activeHelpView, setActiveHelpView] = useState<'menu' | 'blocked' | 'report-user' | 'report-product' | 'contact'>('menu');
+const HelpSupportView = ({ onBack, initialActiveView = 'menu' }: { onBack: () => void; initialActiveView?: HelpSupportSubView }) => {
+  const [activeHelpView, setActiveHelpView] = useState<HelpSupportSubView>(initialActiveView);
+
+  useEffect(() => {
+    setActiveHelpView(initialActiveView);
+  }, [initialActiveView]);
 
   const supportItems = [
     {
@@ -836,17 +891,14 @@ const HelpSupportView = ({ onBack }: { onBack: () => void }) => {
         {supportItems.map((item) => (
           <button 
             key={item.id}
-            onClick={() => setActiveHelpView(item.id as any)}
+            onClick={() => setActiveHelpView(item.id as HelpSupportSubView)}
             className="w-full text-left bg-[#F9F9F9] p-6 rounded-[2rem] flex items-center gap-6 group hover:bg-earth-50 transition-all active:scale-[0.98]"
           >
             <div className={`w-16 h-16 ${item.bgColor} rounded-2xl flex items-center justify-center shrink-0`}>
               <item.icon className={`w-8 h-8 ${item.color}`} strokeWidth={2} />
             </div>
-            <div className="flex-1 space-y-1">
+            <div className="flex-1">
               <h3 className="font-display font-black text-[17px] text-earth-900">{item.title}</h3>
-              <p className="text-sm text-earth-400 font-medium leading-snug">
-                {item.description}
-              </p>
             </div>
             <ChevronRight className="w-5 h-5 text-earth-300 group-hover:text-earth-900 transition-colors" />
           </button>
@@ -936,7 +988,7 @@ const RefreshHubView = ({ onBack }: { onBack: () => void }) => {
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
         </p>
         <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-          © 2026 Revendre Marketplace Pvt Ltd.
+          © 2026 Touchnova LLP
         </p>
       </div>
     </div>
@@ -1020,7 +1072,7 @@ const BuyingView = ({ onBack }: { onBack: () => void }) => {
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
         </p>
         <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-          © 2026 Revendre Marketplace Pvt Ltd.
+          © 2026 Touchnova LLP
         </p>
       </div>
     </div>
@@ -1097,7 +1149,7 @@ const SellingView = ({ onBack }: { onBack: () => void }) => {
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
         </p>
         <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-          © 2026 Revendre Marketplace Pvt Ltd.
+          © 2026 Touchnova LLP
         </p>
       </div>
     </div>
@@ -1161,7 +1213,7 @@ const ShippingView = ({ onBack }: { onBack: () => void }) => {
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
         </p>
         <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-          © 2026 Revendre Marketplace Pvt Ltd.
+          © 2026 Touchnova LLP
         </p>
       </div>
     </div>
@@ -1697,7 +1749,7 @@ const LegalView = ({ onBack, onOpenLegalDoc }: { onBack: () => void; onOpenLegal
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
         </p>
         <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-          © 2026 Revendre Marketplace Pvt Ltd.
+          © 2026 Touchnova LLP
         </p>
       </div>
     </div>
@@ -1821,7 +1873,7 @@ const AboutView = ({ onBack, onOpenPolicy }: { onBack: () => void; onOpenPolicy:
             Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
           </p>
           <p className="text-[10px] font-black text-earth-300 uppercase tracking-tighter">
-            © 2026 Revendre Marketplace Pvt Ltd.
+            © 2026 Touchnova LLP
           </p>
         </div>
       </div>
@@ -1832,7 +1884,7 @@ const AboutView = ({ onBack, onOpenPolicy }: { onBack: () => void; onOpenPolicy:
 // --- Main Settings Component ---
 
 export const Settings: React.FC<SettingsProps> = ({ currentUser, allUsers, onUpdateUser, onDeleteAccount, onBack, initialView = 'menu' }) => {
-  const [currentView, setCurrentView] = useState<SettingsView>(initialView);
+  const [currentView, setCurrentView] = useState<SearchResultView>(initialView);
   const [searchQuery, setSearchQuery] = useState('');
 
   const renderContent = () => {
@@ -1844,7 +1896,15 @@ export const Settings: React.FC<SettingsProps> = ({ currentUser, allUsers, onUpd
       case 'privacy': 
         return <PrivacySecurityView currentUser={currentUser} allUsers={allUsers} onUpdateUser={onUpdateUser} onBack={() => setCurrentView('menu')} />;
       case 'help': 
-        return <HelpSupportView onBack={() => setCurrentView('menu')} />;
+        return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="menu" />;
+      case 'help-blocked':
+        return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="blocked" />;
+      case 'help-report-user':
+        return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="report-user" />;
+      case 'help-report-product':
+        return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="report-product" />;
+      case 'help-contact':
+        return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="contact" />;
       case 'about': 
         return <AboutView onBack={() => setCurrentView('menu')} onOpenPolicy={(view) => setCurrentView(view)} />;
       case 'refresh-hub':

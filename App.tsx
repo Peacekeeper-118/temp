@@ -499,18 +499,22 @@ const App: React.FC = () => {
         location: data.location,
         material: data.material,
         color: data.color,
-        measurements: data.measurements
+        measurements: data.measurements,
+        moderationStatus: 'pending',
+        moderationNote: 'Your post is under review by our team.',
+        moderationUpdatedAt: new Date().toISOString()
     };
 
     if (isMock) {
         setPosts([{ id: `new-${Date.now()}`, ...newPostData }, ...posts]);
+        setNotification('Post submitted for verification. It will appear in feed after approval.');
     } else {
         try {
             await addDoc(collection(db, 'posts'), {
                 ...newPostData,
                 createdAt: serverTimestamp()
             });
-            setNotification('Post published successfully!');
+            setNotification('Post submitted for verification. It will appear in feed after approval.');
         } catch (error) {
             console.error("Error adding post: ", error);
             setNotification('Failed to publish post.');
@@ -643,7 +647,11 @@ const App: React.FC = () => {
   };
 
   const filteredAndSortedPosts = useMemo(() => {
-    let result = posts.filter(p => p.type === 'LISTING' || p.type === 'COMMUNITY');
+    let result = posts.filter(
+      p =>
+        (p.type === 'LISTING' || p.type === 'COMMUNITY') &&
+        (p.moderationStatus ?? 'approved') === 'approved'
+    );
 
     if (!searchQuery && activeTab === Tab.HOME) {
     } else if (!searchQuery && activeTab === Tab.SHOP) {

@@ -42,6 +42,35 @@ export const YourPostsScreen: React.FC<YourPostsScreenProps> = ({ user, posts, o
     setDeleteDialog({ isOpen: false, postId: null, postTitle: null });
   };
 
+  const getModerationMeta = (post: Post) => {
+    const status = post.moderationStatus ?? 'approved';
+
+    if (status === 'pending') {
+      return {
+        label: 'In Review',
+        cardClass: 'bg-amber-50 border-amber-200',
+        textClass: 'text-amber-700',
+        message: 'Our team is verifying this post. It will appear in feed after approval.'
+      };
+    }
+
+    if (status === 'rejected') {
+      return {
+        label: 'Rejected',
+        cardClass: 'bg-rose-50 border-rose-200',
+        textClass: 'text-rose-700',
+        message: post.moderationNote || 'This post was rejected by the review team and is not visible in feed.'
+      };
+    }
+
+    return {
+      label: 'Approved',
+      cardClass: 'bg-emerald-50 border-emerald-200',
+      textClass: 'text-emerald-700',
+      message: post.moderationNote || 'Approved by our team. This post is visible in feed.'
+    };
+  };
+
   return (
     <div className="bg-[#F0F0F0] min-h-full pb-20 animate-fade-in-up">
       {/* Header */}
@@ -66,7 +95,17 @@ export const YourPostsScreen: React.FC<YourPostsScreenProps> = ({ user, posts, o
           </div>
         ) : (
           <div className="space-y-4">
-            {userPosts.map((post) => (
+            {userPosts.map((post) => {
+              const moderationMeta = getModerationMeta(post);
+              const postStatusLabel = post.isSold
+                ? 'Sold'
+                : (post.moderationStatus ?? 'approved') === 'approved'
+                  ? 'Live'
+                  : (post.moderationStatus ?? 'approved') === 'rejected'
+                    ? 'Rejected'
+                    : 'In Review';
+
+              return (
               <div
                 key={post.id}
                 className="bg-white p-4 rounded-[2rem] border border-earth-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden"
@@ -109,6 +148,15 @@ export const YourPostsScreen: React.FC<YourPostsScreenProps> = ({ user, posts, o
                   </div>
                 </div>
 
+                <div className={`mt-3 rounded-2xl border px-3 py-2 ${moderationMeta.cardClass}`}>
+                  <p className={`text-[10px] font-black uppercase tracking-wider ${moderationMeta.textClass}`}>
+                    Verification: {moderationMeta.label}
+                  </p>
+                  <p className={`text-xs font-bold mt-1 leading-snug ${moderationMeta.textClass}`}>
+                    {moderationMeta.message}
+                  </p>
+                </div>
+
                 {/* Additional Details */}
                 <div className="mt-3 pt-3 border-t border-earth-100 grid grid-cols-3 gap-3 text-[10px]">
                   <div>
@@ -121,11 +169,12 @@ export const YourPostsScreen: React.FC<YourPostsScreenProps> = ({ user, posts, o
                   </div>
                   <div>
                     <p className="font-bold text-earth-500 uppercase mb-1">Status</p>
-                    <p className="font-black text-earth-900">{post.isSold ? 'Sold' : 'Active'}</p>
+                    <p className="font-black text-earth-900">{postStatusLabel}</p>
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
