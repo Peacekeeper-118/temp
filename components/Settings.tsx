@@ -1,17 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { User } from '../types';
-import { 
-  Save, 
-  Loader2, 
-  AlertTriangle, 
-  User as UserIcon, 
-  Phone, 
-  Home, 
-  Briefcase, 
-  MapPin, 
-  ShieldCheck, 
-  ArrowLeft, 
+import {
+  Save,
+  Loader2,
+  AlertTriangle,
+  User as UserIcon,
+  Phone,
+  Home,
+  Briefcase,
+  MapPin,
+  ShieldCheck,
+  ArrowLeft,
   Search,
   ChevronRight,
   Bell,
@@ -51,11 +51,11 @@ interface SettingsProps {
 
 // Mock Pincode Data
 const MOCK_PINCODES: Record<string, { city: string, state: string }> = {
-    '40': { city: 'Mumbai', state: 'Maharashtra' },
-    '11': { city: 'New Delhi', state: 'Delhi' },
-    '56': { city: 'Bengaluru', state: 'Karnataka' },
-    '60': { city: 'Chennai', state: 'Tamil Nadu' },
-    '70': { city: 'Kolkata', state: 'West Bengal' },
+  '40': { city: 'Mumbai', state: 'Maharashtra' },
+  '11': { city: 'New Delhi', state: 'Delhi' },
+  '56': { city: 'Bengaluru', state: 'Karnataka' },
+  '60': { city: 'Chennai', state: 'Tamil Nadu' },
+  '70': { city: 'Kolkata', state: 'West Bengal' },
 };
 
 type SettingsView = 'menu' | 'account' | 'notifications' | 'privacy' | 'help' | 'about' | 'refresh-hub' | 'buying' | 'selling' | 'shipping' | 'legal' | 'privacy-policy' | 'terms-conditions';
@@ -65,7 +65,7 @@ type SearchResultView = SettingsView | 'help-blocked' | 'help-report-user' | 'he
 // --- Sub-Components ---
 
 const Toggle = ({ active, onToggle }: { active: boolean, onToggle: () => void }) => (
-  <button 
+  <button
     onClick={onToggle}
     className={`w-12 h-6 rounded-full transition-colors relative ${active ? 'bg-black' : 'bg-gray-200'}`}
   >
@@ -73,8 +73,8 @@ const Toggle = ({ active, onToggle }: { active: boolean, onToggle: () => void })
   </button>
 );
 
-const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: { 
-  onBack: () => void, 
+const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
+  onBack: () => void,
   onNavigate: (view: SearchResultView) => void,
   searchQuery: string,
   onSearchChange: (val: string) => void
@@ -127,11 +127,11 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
   const filteredItems = normalizedQuery.length === 0
     ? menuItems
     : searchItems.filter(item =>
-        [item.label, item.parentLabel || '', ...(item.searchTerms || [])]
-          .join(' ')
-          .toLowerCase()
-          .includes(normalizedQuery)
-      );
+      [item.label, item.parentLabel || '', ...(item.searchTerms || [])]
+        .join(' ')
+        .toLowerCase()
+        .includes(normalizedQuery)
+    );
 
   return (
     <div className="bg-white min-h-screen animate-fade-in">
@@ -146,23 +146,23 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
       <div className="px-6 pt-6">
         <div className="relative mb-8">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-earth-300" />
-          <input 
+          <input
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full bg-[#F5F5F5] pl-12 pr-4 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none transition-all placeholder:text-earth-300 placeholder:font-medium" 
-            placeholder="Search for a setting..." 
+            className="w-full bg-[#F5F5F5] pl-12 pr-4 py-4 rounded-2xl font-bold text-earth-900 focus:outline-none transition-all placeholder:text-earth-300 placeholder:font-medium"
+            placeholder="Search for a setting..."
           />
         </div>
 
         <div className="space-y-0">
           {filteredItems.map((item) => (
-            <button 
+            <button
               key={item.id}
               onClick={() => onNavigate(item.view)}
               className="w-full py-5 flex items-center justify-between group active:bg-earth-50 transition-colors border-b border-earth-50 last:border-0"
             >
               <div className="flex items-center gap-4">
-              <div className="p-1">
+                <div className="p-1">
                   <item.icon className="w-6 h-6 text-earth-900" strokeWidth={2} />
                 </div>
                 <div>
@@ -183,11 +183,11 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
   );
 };
 
-const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu }: { 
-  currentUser: User, 
+const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu }: {
+  currentUser: User,
   onUpdateUser: (data: Partial<User>) => Promise<void>,
   onDeleteAccount: () => Promise<void>,
-  onBackToMenu: () => void 
+  onBackToMenu: () => void
 }) => {
   const [activeTab, setActiveTab] = useState<'account' | 'personal'>('account');
   const [showPassword, setShowPassword] = useState(false);
@@ -236,23 +236,32 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
       {/* Header */}
-      <div className="px-6 pt-12 pb-4">
-        <button onClick={onBackToMenu} className="mb-6 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
+      <div className="px-6 py-6 flex items-center justify-between border-b border-earth-50">
+        <button
+          onClick={onBackToMenu}
+          className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors"
+        >
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
-        <h1 className="text-3xl font-display font-black text-earth-900">Account information</h1>
+
+        <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
+          Account information
+        </h1>
+
+        {/* Empty div to balance the flex layout since there is no right-side button */}
+        <div className="w-10" />
       </div>
 
       {/* Tabs */}
       <div className="px-6 flex gap-6 border-b border-earth-100 mb-8">
-        <button 
+        <button
           onClick={() => setActiveTab('account')}
           className={`pb-3 text-sm font-bold transition-all relative ${activeTab === 'account' ? 'text-earth-900' : 'text-earth-400'}`}
         >
           Account data
           {activeTab === 'account' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-earth-900" />}
         </button>
-        <button 
+        <button
           onClick={() => setActiveTab('personal')}
           className={`pb-3 text-sm font-bold transition-all relative ${activeTab === 'personal' ? 'text-earth-900' : 'text-earth-400'}`}
         >
@@ -267,22 +276,22 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
           <div className="space-y-6">
             <div className="border-b border-earth-100 pb-2">
               <label className="text-xs text-earth-400 font-medium block mb-1">Email address</label>
-              <input 
-                type="email" 
-                defaultValue={currentUser.email || 'm.grygierczyk99@gmail.com'} 
+              <input
+                type="email"
+                defaultValue={currentUser.email || 'm.grygierczyk99@gmail.com'}
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
               />
             </div>
             <div className="border-b border-earth-100 pb-2 relative">
               <label className="text-xs text-earth-400 font-medium block mb-1">Password</label>
-              <input 
-                type={showPassword ? "text" : "password"} 
-                defaultValue="************" 
+              <input
+                type={showPassword ? "text" : "password"}
+                defaultValue="************"
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent pr-10"
               />
-              <button 
+              <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)} 
+                onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-0 bottom-2 text-earth-400 hover:text-earth-900 transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -294,7 +303,7 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
               <p className="text-sm text-earth-500 font-medium leading-tight pr-4">
                 Your account will be permanently removed from the application. All your data will be lost.
               </p>
-              <button 
+              <button
                 onClick={() => setShowDeleteConfirm(true)}
                 className="w-full py-4 mt-2 bg-red-50 text-red-500 font-bold rounded-2xl active:scale-[0.98] transition-all"
               >
@@ -306,9 +315,9 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
           <div className="space-y-6 pb-24">
             <div className="border-b border-earth-100 pb-2">
               <label className="text-xs text-earth-400 font-medium block mb-1">First name</label>
-              <input 
-                type="text" 
-                value={firstName} 
+              <input
+                type="text"
+                value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
                 placeholder="Enter first name"
@@ -316,9 +325,9 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
             </div>
             <div className="border-b border-earth-100 pb-2">
               <label className="text-xs text-earth-400 font-medium block mb-1">Last name</label>
-              <input 
-                type="text" 
-                value={lastName} 
+              <input
+                type="text"
+                value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
                 placeholder="Enter last name"
@@ -326,9 +335,9 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
             </div>
             <div className="border-b border-earth-100 pb-2">
               <label className="text-xs text-earth-400 font-medium block mb-1">Phone number</label>
-              <input 
-                type="tel" 
-                defaultValue={currentUser.addresses?.[0]?.mobile || currentUser.phoneNumber || ''} 
+              <input
+                type="tel"
+                defaultValue={currentUser.addresses?.[0]?.mobile || currentUser.phoneNumber || ''}
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
                 placeholder="Enter phone number"
                 disabled
@@ -342,7 +351,7 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
                   {bioWordCount} / 1000 words
                 </span>
               </div>
-              <textarea 
+              <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={6}
@@ -371,14 +380,14 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
               This action is permanent and cannot be undone. All your posts, orders, and profile data will be removed.
             </p>
             <div className="flex gap-3">
-              <button 
+              <button
                 onClick={() => !isDeleting && setShowDeleteConfirm(false)}
                 className="flex-1 py-4 bg-earth-100 text-earth-900 font-bold rounded-2xl hover:bg-earth-200 transition-colors"
                 disabled={isDeleting}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleDelete}
                 className="flex-1 py-4 bg-red-500 text-white font-bold rounded-2xl hover:bg-red-600 shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2"
                 disabled={isDeleting}
@@ -396,7 +405,7 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
 
       {/* Bottom Save Button */}
       <div className="px-6 py-8 mt-auto pb-12 bg-white/80 backdrop-blur-md sticky bottom-0 border-t border-earth-50">
-        <button 
+        <button
           onClick={handleSave}
           disabled={isSaving || !isBioValid}
           className="w-full py-4 bg-black text-white font-bold rounded-full active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100"
@@ -420,11 +429,20 @@ const NotificationsView = ({ onBack }: { onBack: () => void }) => {
 
   return (
     <div className="min-h-screen bg-white animate-fade-in">
-      <div className="px-6 pt-8 pb-6">
-        <button onClick={onBack} className="mb-3 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
+      <div className="px-6 py-6 flex items-center justify-between border-b border-earth-50 relative">
+        <button
+          onClick={onBack}
+          className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors"
+        >
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
-        <h1 className="text-3xl font-display font-black text-earth-900">Notifications</h1>
+
+        <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
+          Notifications
+        </h1>
+
+        {/* Maintaining symmetry for the flex-between layout */}
+        <div className="w-10" />
       </div>
 
       <div className="px-6 space-y-10">
@@ -438,15 +456,15 @@ const NotificationsView = ({ onBack }: { onBack: () => void }) => {
           <div className="space-y-6 pt-2">
             <div className="flex items-center justify-between py-2 border-b border-earth-50">
               <span className="font-bold text-earth-900">Push</span>
-              <Toggle active={toggles.systemPush} onToggle={() => setToggles(t => ({...t, systemPush: !t.systemPush}))} />
+              <Toggle active={toggles.systemPush} onToggle={() => setToggles(t => ({ ...t, systemPush: !t.systemPush }))} />
             </div>
             <div className="flex items-center justify-between py-2 border-b border-earth-50">
               <span className="font-bold text-earth-900">Email</span>
-              <Toggle active={toggles.systemEmail} onToggle={() => setToggles(t => ({...t, systemEmail: !t.systemEmail}))} />
+              <Toggle active={toggles.systemEmail} onToggle={() => setToggles(t => ({ ...t, systemEmail: !t.systemEmail }))} />
             </div>
             <div className="flex items-center justify-between py-2 border-b border-earth-50">
               <span className="font-bold text-earth-900">SMS</span>
-              <Toggle active={toggles.systemSms} onToggle={() => setToggles(t => ({...t, systemSms: !t.systemSms}))} />
+              <Toggle active={toggles.systemSms} onToggle={() => setToggles(t => ({ ...t, systemSms: !t.systemSms }))} />
             </div>
           </div>
         </div>
@@ -461,15 +479,15 @@ const NotificationsView = ({ onBack }: { onBack: () => void }) => {
           <div className="space-y-6 pt-2">
             <div className="flex items-center justify-between py-2 border-b border-earth-50">
               <span className="font-bold text-earth-900">Push</span>
-              <Toggle active={toggles.marketingPush} onToggle={() => setToggles(t => ({...t, marketingPush: !t.marketingPush}))} />
+              <Toggle active={toggles.marketingPush} onToggle={() => setToggles(t => ({ ...t, marketingPush: !t.marketingPush }))} />
             </div>
             <div className="flex items-center justify-between py-2 border-b border-earth-50">
               <span className="font-bold text-earth-900">Email</span>
-              <Toggle active={toggles.marketingEmail} onToggle={() => setToggles(t => ({...t, marketingEmail: !t.marketingEmail}))} />
+              <Toggle active={toggles.marketingEmail} onToggle={() => setToggles(t => ({ ...t, marketingEmail: !t.marketingEmail }))} />
             </div>
             <div className="flex items-center justify-between py-2 border-b border-earth-50">
               <span className="font-bold text-earth-900">SMS</span>
-              <Toggle active={toggles.marketingSms} onToggle={() => setToggles(t => ({...t, marketingSms: !t.marketingSms}))} />
+              <Toggle active={toggles.marketingSms} onToggle={() => setToggles(t => ({ ...t, marketingSms: !t.marketingSms }))} />
             </div>
           </div>
         </div>
@@ -481,11 +499,11 @@ const NotificationsView = ({ onBack }: { onBack: () => void }) => {
   );
 };
 
-const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: { 
-  currentUser: User, 
+const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
+  currentUser: User,
   allUsers: User[],
   onUpdateUser: (data: Partial<User>) => Promise<void>,
-  onBack: () => void 
+  onBack: () => void
 }) => {
   const [isPrivate, setIsPrivate] = useState(currentUser.isPrivate || false);
   const [showActivity, setShowActivity] = useState(true);
@@ -511,7 +529,7 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
 
   const handleAddUser = async (userToAdd: User) => {
     if (currentUser.whitelistedUserIds?.includes(userToAdd.id)) return;
-    
+
     const newIds = [...(currentUser.whitelistedUserIds || []), userToAdd.id];
     try {
       await onUpdateUser({ whitelistedUserIds: newIds });
@@ -534,11 +552,20 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
   return (
     <div className="min-h-screen bg-white animate-fade-in flex flex-col">
       {/* Header */}
-      <div className="px-6 pt-8 pb-6">
-        <button onClick={onBack} className="mb-3 hover:bg-earth-50 p-2 -ml-2 rounded-full transition-colors">
+      <div className="px-6 py-6 flex items-center justify-between border-b border-earth-50 relative">
+        <button
+          onClick={onBack}
+          className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors"
+        >
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
-        <h1 className="text-3xl font-display font-black text-earth-900">Privacy & Security</h1>
+
+        <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 whitespace-nowrap">
+          Privacy & Security
+        </h1>
+
+        {/* Maintaining horizontal symmetry */}
+        <div className="w-10" />
       </div>
 
       <div className="px-6 space-y-10 pb-24 overflow-y-auto">
@@ -558,7 +585,7 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
               </div>
               <Toggle active={isPrivate} onToggle={handleTogglePrivate} />
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
@@ -577,40 +604,40 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
         {/* Whitelist Section - Only show when Private is ON */}
         {isPrivate && (
           <div className="space-y-4 animate-fade-in">
-             <div className="flex items-center justify-between px-1">
-               <h3 className="text-xs font-black text-earth-400 uppercase tracking-widest">Whitelisted Users</h3>
-               <button 
-                  onClick={() => setIsSearchOpen(true)}
-                  className="text-[10px] font-black text-pop-purple uppercase tracking-tighter bg-pop-purple/5 px-3 py-1 rounded-full"
-               >
-                 + Add User
-               </button>
-             </div>
-             
-             <div className="bg-[#F9F9F9] p-2 rounded-[2rem]">
-                {whitelistedUsers.length === 0 ? (
-                  <div className="p-8 text-center">
-                     <p className="text-xs text-earth-400 font-bold italic">No users whitelisted yet.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    {whitelistedUsers.map(user => (
-                      <div key={user.id} className="bg-white p-3 rounded-2xl flex items-center justify-between shadow-sm">
-                        <div className="flex items-center gap-3">
-                           <img src={user.avatarUrl} className="w-8 h-8 rounded-full object-cover" />
-                           <span className="text-xs font-bold text-earth-900">@{user.username}</span>
-                        </div>
-                        <button 
-                          onClick={() => handleRemoveUser(user.id)}
-                          className="p-2 text-earth-300 hover:text-red-500 transition-colors"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
+            <div className="flex items-center justify-between px-1">
+              <h3 className="text-xs font-black text-earth-400 uppercase tracking-widest">Whitelisted Users</h3>
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="text-[10px] font-black text-pop-purple uppercase tracking-tighter bg-pop-purple/5 px-3 py-1 rounded-full"
+              >
+                + Add User
+              </button>
+            </div>
+
+            <div className="bg-[#F9F9F9] p-2 rounded-[2rem]">
+              {whitelistedUsers.length === 0 ? (
+                <div className="p-8 text-center">
+                  <p className="text-xs text-earth-400 font-bold italic">No users whitelisted yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {whitelistedUsers.map(user => (
+                    <div key={user.id} className="bg-white p-3 rounded-2xl flex items-center justify-between shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <img src={user.avatarUrl} className="w-8 h-8 rounded-full object-cover" />
+                        <span className="text-xs font-bold text-earth-900">@{user.username}</span>
                       </div>
-                    ))}
-                  </div>
-                )}
-             </div>
+                      <button
+                        onClick={() => handleRemoveUser(user.id)}
+                        className="p-2 text-earth-300 hover:text-red-500 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -623,7 +650,7 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
               { id: 'login', title: 'Login Activity', desc: 'See where and when you\'ve logged in.', icon: History, color: 'text-pop-cyan' },
               { id: 'security-check', title: 'Security Checkup', desc: 'Review your security settings and recovery info.', icon: Fingerprint, color: 'text-pop-rose' }
             ].map((item) => (
-              <button 
+              <button
                 key={item.id}
                 onClick={() => console.log(`Navigating to ${item.id}`)}
                 className="w-full text-left bg-[#F9F9F9] p-5 rounded-[2rem] flex items-center gap-4 group hover:bg-earth-50 transition-all active:scale-[0.98]"
@@ -649,7 +676,7 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
               { id: 'tags', title: 'Tags & Mentions', icon: UserCheck },
               { id: 'blocked', title: 'Blocked Users', icon: UserX }
             ].map((item) => (
-              <button 
+              <button
                 key={item.id}
                 onClick={() => console.log(`Navigating to ${item.id}`)}
                 className="bg-[#F9F9F9] p-5 rounded-[2rem] flex flex-col items-center gap-3 hover:bg-earth-50 transition-all group active:scale-[0.95]"
@@ -664,7 +691,7 @@ const PrivacySecurityView = ({ currentUser, allUsers, onUpdateUser, onBack }: {
         </div>
       </div>
 
-      <UserSearchModal 
+      <UserSearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         users={allUsers.filter(u => u.id !== currentUser.id && !currentUser.whitelistedUserIds?.includes(u.id))}
@@ -880,16 +907,14 @@ const HelpSupportView = ({ onBack, initialActiveView = 'menu' }: { onBack: () =>
         <button onClick={onBack} className="p-2 -ml-2 hover:bg-earth-50 rounded-full transition-colors">
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
-        <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2">Help & Support</h1>
-        <button onClick={onBack} className="p-2 -mr-2 hover:bg-earth-50 rounded-full transition-colors">
-          <X className="w-6 h-6 text-earth-900" />
-        </button>
+        <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2 whitespace-nowrap">Help & Support</h1>
+        <div className="w-10"></div>
       </div>
 
       {/* Content */}
       <div className="flex-1 px-6 py-8 space-y-6">
         {supportItems.map((item) => (
-          <button 
+          <button
             key={item.id}
             onClick={() => setActiveHelpView(item.id as HelpSupportSubView)}
             className="w-full text-left bg-[#F9F9F9] p-6 rounded-[2rem] flex items-center gap-6 group hover:bg-earth-50 transition-all active:scale-[0.98]"
@@ -1712,7 +1737,7 @@ const LegalView = ({ onBack, onOpenLegalDoc }: { onBack: () => void; onOpenLegal
           <X className="w-6 h-6 text-earth-900" />
         </button>
       </div>
-      
+
       <div className="flex-1 px-6 py-8 pb-20 overflow-y-auto flex flex-col">
         <div className="space-y-4">
           {legalDocuments.map((doc) => {
@@ -1739,11 +1764,11 @@ const LegalView = ({ onBack, onOpenLegalDoc }: { onBack: () => void; onOpenLegal
             );
           })}
         </div>
-        
+
         {/* Footer pushes to bottom */}
         <div className="mt-auto" />
       </div>
-      
+
       <div className="px-6 py-6 border-t border-earth-50 text-center space-y-1">
         <p className="text-[10px] font-black text-earth-400 tracking-widest flex items-center justify-center gap-1.5 uppercase">
           Made with <span className="text-rose-500 text-xs animate-pulse">❤️</span> in Chennai
@@ -1808,9 +1833,7 @@ const AboutView = ({ onBack, onOpenPolicy }: { onBack: () => void; onOpenPolicy:
           <ArrowLeft className="w-6 h-6 text-earth-900" />
         </button>
         <h1 className="font-display font-black text-2xl text-earth-900 absolute left-1/2 -translate-x-1/2">About Revendre</h1>
-        <button onClick={onBack} className="p-2 -mr-2 hover:bg-earth-50 rounded-full transition-colors">
-          <X className="w-6 h-6 text-earth-900" />
-        </button>
+        <div className="w-10"></div>
       </div>
 
       {/* Content */}
@@ -1889,13 +1912,13 @@ export const Settings: React.FC<SettingsProps> = ({ currentUser, allUsers, onUpd
 
   const renderContent = () => {
     switch (currentView) {
-      case 'account': 
+      case 'account':
         return <AccountView currentUser={currentUser} onUpdateUser={onUpdateUser} onDeleteAccount={onDeleteAccount} onBackToMenu={() => setCurrentView('menu')} />;
-      case 'notifications': 
+      case 'notifications':
         return <NotificationsView onBack={() => setCurrentView('menu')} />;
-      case 'privacy': 
+      case 'privacy':
         return <PrivacySecurityView currentUser={currentUser} allUsers={allUsers} onUpdateUser={onUpdateUser} onBack={() => setCurrentView('menu')} />;
-      case 'help': 
+      case 'help':
         return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="menu" />;
       case 'help-blocked':
         return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="blocked" />;
@@ -1905,7 +1928,7 @@ export const Settings: React.FC<SettingsProps> = ({ currentUser, allUsers, onUpd
         return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="report-product" />;
       case 'help-contact':
         return <HelpSupportView onBack={() => setCurrentView('menu')} initialActiveView="contact" />;
-      case 'about': 
+      case 'about':
         return <AboutView onBack={() => setCurrentView('menu')} onOpenPolicy={(view) => setCurrentView(view)} />;
       case 'refresh-hub':
         return <RefreshHubView onBack={() => setCurrentView('about')} />;
@@ -1921,7 +1944,7 @@ export const Settings: React.FC<SettingsProps> = ({ currentUser, allUsers, onUpd
         return <PrivacyPolicyDetailView onBack={() => setCurrentView('legal')} />;
       case 'terms-conditions':
         return <TermsConditionsDetailView onBack={() => setCurrentView('legal')} />;
-      default: 
+      default:
         return <MenuView onBack={onBack} onNavigate={setCurrentView} searchQuery={searchQuery} onSearchChange={setSearchQuery} />;
     }
   };
