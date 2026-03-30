@@ -74,56 +74,56 @@ export const FeedItem: React.FC<FeedItemProps> = ({ post, isSaved = false, onAdd
         </div>
 
         {/* Bottom Content Area */}
-        <div className="absolute bottom-0 left-0 right-0 p-8 z-10">
+        <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 z-10">
             {/* Title - Bold Outfit Font */}
-            <h3 className="text-white font-display font-black text-2xl leading-[1.15] mb-4 line-clamp-2 pr-4 drop-shadow-md tracking-tight">
+            <h3 className="text-white font-display font-black text-xl sm:text-2xl leading-[1.15] mb-3 sm:mb-4 line-clamp-2 pr-4 drop-shadow-md tracking-tight">
                 {post.description}
             </h3>
             
             {/* Tags Row - Dark Rounded Pills */}
             {isListing && (
-                <div className="flex items-center gap-3 mb-6" aria-label={`Brand: ${post.brand}, Size: ${post.size}`}>
-                    <span className="bg-[#333333]/80 backdrop-blur-md text-white px-4 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-widest border border-white/5">{post.brand}</span>
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6" aria-label={`Brand: ${post.brand}, Size: ${post.size}`}>
+                    <span className="bg-[#333333]/80 backdrop-blur-md text-white px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest border border-white/5">{post.brand}</span>
                     <span className="text-white/20 font-bold" aria-hidden="true">•</span>
-                    <span className="bg-[#333333]/80 backdrop-blur-md text-white px-4 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-widest border border-white/5">{post.size}</span>
+                    <span className="bg-[#333333]/80 backdrop-blur-md text-white px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-[11px] font-black uppercase tracking-widest border border-white/5">{post.size}</span>
                 </div>
             )}
 
             {/* Action Bar */}
-            <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                    {isListing && <span className="font-display font-black text-4xl text-white tracking-tighter" aria-label={`Price: ${post.price} rupees`}>₹{post.price}</span>}
+            <div className="flex items-center justify-between gap-2 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    {isListing && <span className="font-display font-black text-3xl sm:text-4xl text-white tracking-tighter" aria-label={`Price: ${post.price} rupees`}>₹{post.price}</span>}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                     {/* Circle White Buttons */}
                     <button 
                         onClick={(e) => { e.stopPropagation(); onToggleSave && onToggleSave(post); }}
-                        className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-xl active:scale-95 ${isSaved ? 'bg-pop-purple' : 'bg-white hover:bg-earth-50'}`}
+                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all shadow-xl active:scale-90 will-change-transform ${isSaved ? 'bg-pop-purple' : 'bg-white hover:bg-earth-50'}`}
                         aria-label={isSaved ? "Remove from saved" : "Save post"}
                     >
-                         {isSaved ? <NeoBookmark className="w-5 h-5" /> : <Bookmark className="w-6 h-6 text-earth-900" />}
+                         {isSaved ? <NeoBookmark className="w-4 h-4 sm:w-5 sm:h-5" /> : <Bookmark className="w-5 h-5 sm:w-6 sm:h-6 text-earth-900" />}
                     </button>
 
                     <button 
                         onClick={handleLike}
-                        className={`w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-xl active:scale-95 ${liked ? 'bg-pop-pink' : 'bg-white hover:bg-earth-50'}`}
+                        className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all shadow-xl active:scale-90 will-change-transform ${liked ? 'bg-pop-pink' : 'bg-white hover:bg-earth-50'}`}
                         aria-label={liked ? "Unlike post" : "Like post"}
                     >
                         {liked ? (
-                          <Heart className={`w-6 h-6 transition-transform stroke-2 fill-white text-white ${isLikeAnimating ? 'animate-pop' : ''}`} aria-hidden="true" />
+                          <Heart className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform stroke-2 fill-white text-white ${isLikeAnimating ? 'animate-pop' : ''}`} aria-hidden="true" />
                         ) : (
-                          <NeoHeart className="w-6 h-6" />
+                          <NeoHeart className="w-5 h-5 sm:w-6 sm:h-6" />
                         )}
                     </button>
                     
                     {isListing && onAddToCart && !post.isSold && (
                         <button 
                             onClick={(e) => { e.stopPropagation(); onAddToCart(post); }}
-                            className="h-12 px-6 rounded-full bg-[#C7F464] text-earth-900 font-black text-[13px] flex items-center gap-2 shadow-xl active:scale-95 transition-all hover:bg-lime-300"
+                            className="h-10 sm:h-12 px-4 sm:px-6 rounded-full bg-[#C7F464] text-earth-900 font-black text-[11px] sm:text-[13px] flex items-center gap-1.5 sm:gap-2 shadow-xl active:scale-90 transition-all hover:bg-lime-300 will-change-transform"
                             aria-label="Add to cart"
                         >
-                            <ShoppingBag className="w-4 h-4 text-earth-900" strokeWidth={3} aria-hidden="true" /> Add
+                            <ShoppingBag className="w-3.5 h-3.5 sm:w-4 h-4 text-earth-900" strokeWidth={3} aria-hidden="true" /> Add
                         </button>
                     )}
                 </div>

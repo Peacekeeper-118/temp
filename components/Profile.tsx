@@ -43,10 +43,10 @@ export const Profile: React.FC<ProfileProps> = ({ user, posts, savedPosts = [], 
           </div>
       </div>
 
-      <div className="px-6 -mt-16 relative z-10">
-          <div className="bg-white p-6 rounded-[2.5rem] shadow-xl text-center">
+      <div className="px-4 sm:px-6 -mt-16 relative z-10">
+          <div className="bg-white p-5 sm:p-6 rounded-[2.5rem] shadow-xl text-center">
               <div className="relative inline-block mb-4">
-                  <div className="w-24 h-24 rounded-full p-1 bg-white mx-auto shadow-lg">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-1 bg-white mx-auto shadow-lg">
                       <img src={user.avatarUrl} className="w-full h-full rounded-full object-cover" alt="" />
                   </div>
                   <div className="absolute bottom-0 right-0 bg-pop-yellow text-earth-900 text-[10px] font-black px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm">
@@ -54,34 +54,34 @@ export const Profile: React.FC<ProfileProps> = ({ user, posts, savedPosts = [], 
                   </div>
               </div>
               
-              {user.displayName && <h2 className="font-display font-black text-2xl text-earth-900 mb-1">{user.displayName}</h2>}
-              <p className="text-earth-400 text-sm font-medium mb-1">@{user.username || 'user'}</p>
-              <p className="text-earth-500 text-sm font-bold mb-4">{user.bio || 'No bio yet.'}</p>
+              {user.displayName && <h2 className="font-display font-black text-xl sm:text-2xl text-earth-900 mb-1">{user.displayName}</h2>}
+              <p className="text-earth-400 text-xs sm:text-sm font-medium mb-1">@{user.username || 'user'}</p>
+              <p className="text-earth-500 text-xs sm:text-sm font-bold mb-4">{user.bio || 'No bio yet.'}</p>
               
-              <div className="flex justify-center items-center gap-6 py-4 border-t border-earth-100 mb-4 border-dashed">
+              <div className="flex justify-center items-center gap-4 sm:gap-6 py-4 border-t border-earth-100 mb-4 border-dashed">
                   <div className="text-center">
-                      <div className="font-black text-xl text-earth-900">{user.totalSales}</div>
-                      <div className="text-[10px] uppercase font-black text-earth-400 tracking-wide">Sold</div>
+                      <div className="font-black text-lg sm:text-xl text-earth-900">{user.totalSales}</div>
+                      <div className="text-[9px] sm:text-[10px] uppercase font-black text-earth-400 tracking-wide">Sold</div>
                   </div>
                   <div className="text-center">
-                      <div className="font-black text-xl text-earth-900">0</div>
-                      <div className="text-[10px] uppercase font-black text-earth-400 tracking-wide">Follows</div>
+                      <div className="font-black text-lg sm:text-xl text-earth-900">0</div>
+                      <div className="text-[9px] sm:text-[10px] uppercase font-black text-earth-400 tracking-wide">Follows</div>
                   </div>
                   <div className="text-center">
-                      <div className="font-black text-xl text-earth-900">{userPosts.length}</div>
-                      <div className="text-[10px] uppercase font-black text-earth-400 tracking-wide">Posted</div>
+                      <div className="font-black text-lg sm:text-xl text-earth-900">{userPosts.length}</div>
+                      <div className="text-[9px] sm:text-[10px] uppercase font-black text-earth-400 tracking-wide">Posted</div>
                   </div>
               </div>
 
               <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                       {onOpenDashboard && (
-                          <button onClick={onOpenDashboard} className="bg-earth-900 text-white py-3 rounded-xl font-bold text-sm shadow-lg hover:bg-earth-800 active:scale-95 transition-all flex items-center justify-center gap-2">
+                          <button onClick={onOpenDashboard} className="bg-earth-900 text-white py-3 rounded-xl font-bold text-xs sm:text-sm shadow-lg hover:bg-earth-800 active:scale-95 transition-all flex items-center justify-center gap-2">
                               <BarChart2 className="w-4 h-4"/> Dashboard
                           </button>
                       )}
                       {onOpenOrderTracking && (
-                          <button onClick={onOpenOrderTracking} className="bg-earth-50 text-earth-900 py-3 rounded-xl font-bold text-sm hover:bg-earth-100 active:scale-95 transition-all flex items-center justify-center gap-2">
+                          <button onClick={onOpenOrderTracking} className="bg-earth-50 text-earth-900 py-3 rounded-xl font-bold text-xs sm:text-sm hover:bg-earth-100 active:scale-95 transition-all flex items-center justify-center gap-2">
                               <Truck className="w-4 h-4"/> Tracking
                           </button>
                       )}
@@ -91,28 +91,28 @@ export const Profile: React.FC<ProfileProps> = ({ user, posts, savedPosts = [], 
       </div>
 
       {/* Account Quick Actions Grid */}
-      <div className="px-6 mt-8">
-          <div className="grid grid-cols-2 gap-4">
+      <div className="px-4 sm:px-6 mt-6 sm:mt-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
               <button 
                 onClick={onOpenYourOrders}
-                className="bg-white p-6 rounded-[2rem] border border-earth-200 shadow-sm hover:shadow-md hover:border-earth-300 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 group"
+                className="bg-white p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-earth-200 shadow-sm hover:shadow-md hover:border-earth-300 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 group"
               >
-                  <Package className="w-6 h-6 text-earth-400 group-hover:text-earth-900 transition-colors" />
-                  <span className="font-black text-earth-900 text-sm tracking-tight">Your Orders</span>
+                  <Package className="w-5 h-5 sm:w-6 h-6 text-earth-400 group-hover:text-earth-900 transition-colors" />
+                  <span className="font-black text-earth-900 text-xs sm:text-sm tracking-tight">Your Orders</span>
               </button>
               <button 
                 onClick={onOpenShipping}
-                className="bg-white p-6 rounded-[2rem] border border-earth-200 shadow-sm hover:shadow-md hover:border-earth-300 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 group"
+                className="bg-white p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-earth-200 shadow-sm hover:shadow-md hover:border-earth-300 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 group"
               >
-                  <MapPin className="w-6 h-6 text-earth-400 group-hover:text-earth-900 transition-colors" />
-                  <span className="font-black text-earth-900 text-sm tracking-tight">Your Addresses</span>
+                  <MapPin className="w-5 h-5 sm:w-6 h-6 text-earth-400 group-hover:text-earth-900 transition-colors" />
+                  <span className="font-black text-earth-900 text-xs sm:text-sm tracking-tight">Addresses</span>
               </button>
               <button 
                 onClick={onOpenYourPosts}
-                className="bg-white p-6 rounded-[2rem] border border-earth-200 shadow-sm hover:shadow-md hover:border-earth-300 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 group"
+                className="bg-white p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border border-earth-200 shadow-sm hover:shadow-md hover:border-earth-300 transition-all active:scale-95 flex flex-col items-center justify-center gap-2 group col-span-2 sm:col-span-1"
               >
-                  <FileText className="w-6 h-6 text-earth-400 group-hover:text-earth-900 transition-colors" />
-                  <span className="font-black text-earth-900 text-sm tracking-tight">Your Posts</span>
+                  <FileText className="w-5 h-5 sm:w-6 h-6 text-earth-400 group-hover:text-earth-900 transition-colors" />
+                  <span className="font-black text-earth-900 text-xs sm:text-sm tracking-tight">Your Posts</span>
               </button>
           </div>
       </div>

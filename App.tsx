@@ -747,7 +747,7 @@ const App: React.FC = () => {
       case Tab.HOME:
         return (
           <div className="pt-0">
-             <div className="mx-4 mt-6 mb-4 relative h-44 rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white animate-fade-in-up group">
+             <div className="mx-4 mt-2 mb-4 relative h-44 rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white animate-fade-in-up group">
                  <video 
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     autoPlay muted loop playsInline
@@ -798,7 +798,7 @@ const App: React.FC = () => {
       case Tab.SHOP:
         return (
           <div className="px-6 pb-24 min-h-screen">
-             <div className="flex gap-2 items-center mb-6 mt-4">
+             <div className="flex gap-2 items-center mb-6 mt-1">
                  <div className="relative flex-1">
                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-earth-400" />
                      <input 
@@ -818,7 +818,7 @@ const App: React.FC = () => {
                      )}
                  </button>
              </div>
-             <div className="flex gap-3 overflow-x-auto no-scrollbar mb-8 pb-4 snap-x">
+             <div className="flex gap-3 overflow-x-auto no-scrollbar mb-8 pb-4 snap-x scroll-pl-6">
                 {CATEGORIES.map((cat, idx) => {
                     const Icon = CATEGORY_ICONS[cat.icon] || NeoSparkles;
                     const isActive = activeCategory === cat.id;
@@ -826,11 +826,11 @@ const App: React.FC = () => {
                         <button 
                             key={cat.id} 
                             onClick={() => setActiveCategory(isActive ? null : cat.id)}
-                            className={`snap-start flex-shrink-0 px-6 py-6 rounded-[1.5rem] ${isActive ? 'bg-earth-900 text-white ring-4 ring-offset-2 ring-earth-900' : cat.color} shadow-lg hover:scale-105 transition-all flex flex-col items-center justify-center gap-2 min-w-[100px] animate-pop`} 
+                            className={`snap-start flex-shrink-0 px-5 sm:px-6 py-5 sm:py-6 rounded-[1.5rem] ${isActive ? 'bg-earth-900 text-white ring-4 ring-offset-2 ring-earth-900' : cat.color} shadow-lg hover:scale-105 active:scale-95 transition-all flex flex-col items-center justify-center gap-2 min-w-[90px] sm:min-w-[100px] animate-pop will-change-transform`} 
                             style={{ animationDelay: `${idx * 50}ms` }}
                         >
-                            <Icon className="w-12 h-12" />
-                            <span className={`text-xs font-black uppercase tracking-wide px-2 py-0.5 rounded-lg ${isActive ? 'text-white' : 'text-earth-900 bg-white/50'}`}>{cat.name}</span>
+                            <Icon className="w-10 h-10 sm:w-12 sm:h-12" />
+                            <span className={`text-[10px] sm:text-xs font-black uppercase tracking-wide px-2 py-0.5 rounded-lg ${isActive ? 'text-white' : 'text-earth-900 bg-white/50'}`}>{cat.name}</span>
                         </button>
                     );
                 })}
@@ -876,7 +876,7 @@ const App: React.FC = () => {
           const total = cart.reduce((sum, item) => sum + item.price, 0);
           return (
               <div className="px-6 min-h-full">
-                  <div className="flex items-center gap-2 mb-6 mt-4">
+                  <div className="flex items-center gap-2 mb-6 mt-1">
                      <h2 className="font-display font-black text-3xl">My Bag <span className="text-pop-cyan">.</span></h2>
                      <NeoBag className="w-8 h-8" />
                   </div>

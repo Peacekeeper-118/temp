@@ -102,7 +102,6 @@ const MenuView = ({ onBack, onNavigate, searchQuery, onSearchChange }: {
     { id: 'personal-data', label: 'Personal Data', icon: UserIcon, view: 'account', parentLabel: 'Account', searchTerms: ['first name', 'last name', 'phone', 'bio', 'delete account'] },
     { id: 'system-notifications', label: 'System Notifications', icon: Bell, view: 'notifications', parentLabel: 'Notifications', searchTerms: ['push', 'email', 'sms', 'updates'] },
     { id: 'marketing-notifications', label: 'Marketing Notifications', icon: Bell, view: 'notifications', parentLabel: 'Notifications', searchTerms: ['offers', 'promotions', 'push', 'email', 'sms'] },
-    { id: 'reminders', label: 'Reminders', icon: Bell, view: 'notifications', parentLabel: 'Notifications' },
     { id: 'private-account', label: 'Private Account', icon: Lock, view: 'privacy', parentLabel: 'Privacy & Security' },
     { id: 'activity-status', label: 'Show Activity Status', icon: Activity, view: 'privacy', parentLabel: 'Privacy & Security' },
     { id: 'whitelisted-users', label: 'Whitelisted Users', icon: UserCheck, view: 'privacy', parentLabel: 'Privacy & Security' },
@@ -490,9 +489,6 @@ const NotificationsView = ({ onBack }: { onBack: () => void }) => {
               <Toggle active={toggles.marketingSms} onToggle={() => setToggles(t => ({ ...t, marketingSms: !t.marketingSms }))} />
             </div>
           </div>
-        </div>
-        <div className="pt-2">
-          <h3 className="text-lg font-bold text-earth-900">Reminders</h3>
         </div>
       </div>
     </div>
