@@ -43,6 +43,18 @@ export interface User {
   isAdmin?: boolean; // New: Admin Flag
   isPrivate?: boolean;
   whitelistedUserIds?: string[];
+  // Store Verification
+  isStore?: boolean;
+  storeDetails?: StoreDetails;
+}
+
+export interface StoreDetails {
+  storeName: string;
+  storeAddress: string;
+  businessType: string;
+  gstNumber?: string;
+  panNumber?: string;
+  submissionDate: string;
 }
 
 export interface ImageMetadata {

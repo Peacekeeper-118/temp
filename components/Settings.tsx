@@ -58,7 +58,7 @@ const MOCK_PINCODES: Record<string, { city: string, state: string }> = {
   '70': { city: 'Kolkata', state: 'West Bengal' },
 };
 
-type SettingsView = 'menu' | 'account' | 'notifications' | 'privacy' | 'help' | 'about' | 'refresh-hub' | 'buying' | 'selling' | 'shipping' | 'legal' | 'privacy-policy' | 'terms-conditions';
+type SettingsView = 'menu' | 'account' | 'notifications' | 'privacy' | 'help' | 'about' | 'refresh-hub' | 'buying' | 'selling' | 'shipping' | 'legal' | 'privacy-policy' | 'terms-conditions' | 'verification';
 type HelpSupportSubView = 'menu' | 'blocked' | 'report-user' | 'report-product' | 'contact';
 type SearchResultView = SettingsView | 'help-blocked' | 'help-report-user' | 'help-report-product' | 'help-contact';
 
@@ -188,7 +188,9 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
   onDeleteAccount: () => Promise<void>,
   onBackToMenu: () => void
 }) => {
-  const [activeTab, setActiveTab] = useState<'account' | 'personal'>('account');
+  const [activeTab, setActiveTab] = useState<'account' | 'personal' | 'verification'>(
+    currentUser.isStore && currentUser.kycStatus !== 'verified' ? 'verification' : 'account'
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -198,6 +200,13 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
   const [firstName, setFirstName] = useState((currentUser.displayName || '').split(' ')[0] || '');
   const [lastName, setLastName] = useState((currentUser.displayName || '').split(' ').slice(1).join(' ') || '');
   const [bio, setBio] = useState(currentUser.bio || '');
+
+  // Verification Form State
+  const [storeName, setStoreName] = useState(currentUser.storeDetails?.storeName || '');
+  const [storeAddress, setStoreAddress] = useState(currentUser.storeDetails?.storeAddress || '');
+  const [businessType, setBusinessType] = useState(currentUser.storeDetails?.businessType || 'Individual');
+  const [gstNumber, setGstNumber] = useState(currentUser.storeDetails?.gstNumber || '');
+  const [panNumber, setPanNumber] = useState(currentUser.storeDetails?.panNumber || '');
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -221,6 +230,40 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
       setIsSaving(false);
     } catch (error) {
       console.error("Save failed", error);
+      setIsSaving(false);
+    }
+  };
+
+  const handleToggleStore = async () => {
+    const newVal = !currentUser.isStore;
+    try {
+      await onUpdateUser({ isStore: newVal });
+      if (newVal) setActiveTab('verification');
+      else setActiveTab('account');
+    } catch (error) {
+      console.error("Failed to update store status", error);
+    }
+  };
+
+  const handleSubmitVerification = async () => {
+    if (!storeName || !storeAddress) return;
+    setIsSaving(true);
+    try {
+      const storeDetails = {
+        storeName,
+        storeAddress,
+        businessType,
+        gstNumber,
+        panNumber,
+        submissionDate: new Date().toISOString()
+      };
+      await onUpdateUser({ 
+        storeDetails,
+        kycStatus: 'pending'
+      });
+      setIsSaving(false);
+    } catch (error) {
+      console.error("Verification submission failed", error);
       setIsSaving(false);
     }
   };
@@ -252,33 +295,43 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
       </div>
 
       {/* Tabs */}
-      <div className="px-6 flex gap-6 border-b border-earth-100 mb-8">
+      <div className="px-6 flex gap-6 border-b border-earth-100 mb-8 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setActiveTab('account')}
-          className={`pb-3 text-sm font-bold transition-all relative ${activeTab === 'account' ? 'text-earth-900' : 'text-earth-400'}`}
+          className={`pb-3 text-sm font-bold transition-all relative whitespace-nowrap ${activeTab === 'account' ? 'text-earth-900' : 'text-earth-400'}`}
         >
           Account data
           {activeTab === 'account' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-earth-900" />}
         </button>
         <button
           onClick={() => setActiveTab('personal')}
-          className={`pb-3 text-sm font-bold transition-all relative ${activeTab === 'personal' ? 'text-earth-900' : 'text-earth-400'}`}
+          className={`pb-3 text-sm font-bold transition-all relative whitespace-nowrap ${activeTab === 'personal' ? 'text-earth-900' : 'text-earth-400'}`}
         >
           Personal data
           {activeTab === 'personal' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-earth-900" />}
         </button>
+        {currentUser.isStore && (
+          <button
+            onClick={() => setActiveTab('verification')}
+            className={`pb-3 text-sm font-bold transition-all relative whitespace-nowrap ${activeTab === 'verification' ? 'text-earth-900' : 'text-earth-400'}`}
+          >
+            Store Verification
+            {activeTab === 'verification' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-earth-900" />}
+          </button>
+        )}
       </div>
 
       {/* Content */}
-      <div className="px-6 flex-1">
+      <div className="px-6 flex-1 overflow-y-auto no-scrollbar pb-32">
         {activeTab === 'account' ? (
           <div className="space-y-6">
             <div className="border-b border-earth-100 pb-2">
               <label className="text-xs text-earth-400 font-medium block mb-1">Email address</label>
               <input
                 type="email"
-                defaultValue={currentUser.email || 'm.grygierczyk99@gmail.com'}
+                defaultValue={currentUser.email || ''}
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent"
+                readOnly
               />
             </div>
             <div className="border-b border-earth-100 pb-2 relative">
@@ -287,6 +340,7 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
                 type={showPassword ? "text" : "password"}
                 defaultValue="************"
                 className="w-full text-base font-medium text-earth-900 outline-none bg-transparent pr-10"
+                readOnly
               />
               <button
                 type="button"
@@ -295,6 +349,21 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
+            </div>
+
+            {/* Store Account Toggle */}
+            <div className="pt-6 border-t border-earth-100">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-earth-900 flex items-center gap-2">
+                    <Home className="w-4 h-4" /> Store Account
+                  </h3>
+                  <p className="text-[11px] text-earth-400 font-medium leading-tight mt-1">
+                    Convert your account to a store to get verified and access professional selling tools.
+                  </p>
+                </div>
+                <Toggle active={currentUser.isStore || false} onToggle={handleToggleStore} />
+              </div>
             </div>
 
             <div className="pt-8 space-y-4">
@@ -310,8 +379,8 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
               </button>
             </div>
           </div>
-        ) : (
-          <div className="space-y-6 pb-24">
+        ) : activeTab === 'personal' ? (
+          <div className="space-y-6">
             <div className="border-b border-earth-100 pb-2">
               <label className="text-xs text-earth-400 font-medium block mb-1">First name</label>
               <input
@@ -364,54 +433,141 @@ const AccountView = ({ currentUser, onUpdateUser, onDeleteAccount, onBackToMenu 
               )}
             </div>
           </div>
+        ) : (
+          <div className="space-y-8">
+            {currentUser.kycStatus === 'verified' ? (
+              <div className="bg-pop-lime/10 p-8 rounded-[2.5rem] border-2 border-pop-lime/20 text-center animate-fade-in">
+                <div className="w-20 h-20 bg-pop-lime rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-pop-lime/20">
+                  <ShieldCheck className="w-10 h-10 text-earth-900" />
+                </div>
+                <h3 className="font-display font-black text-2xl text-earth-900 mb-2">Verified Store</h3>
+                <p className="text-earth-600 text-sm font-medium">Your store has been successfully verified. You now have the verified badge on your profile.</p>
+                
+                <div className="mt-8 pt-8 border-t border-pop-lime/20 text-left space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-earth-400 uppercase tracking-widest">Store Name</span>
+                    <span className="text-sm font-black text-earth-900">{currentUser.storeDetails?.storeName}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-earth-400 uppercase tracking-widest">Type</span>
+                    <span className="text-sm font-black text-earth-900">{currentUser.storeDetails?.businessType}</span>
+                  </div>
+                </div>
+              </div>
+            ) : currentUser.kycStatus === 'pending' ? (
+              <div className="bg-pop-yellow/10 p-8 rounded-[2.5rem] border-2 border-pop-yellow/20 text-center animate-fade-in">
+                <div className="w-20 h-20 bg-pop-yellow rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-pop-yellow/20">
+                  <Loader2 className="w-10 h-10 text-earth-900 animate-spin" />
+                </div>
+                <h3 className="font-display font-black text-2xl text-earth-900 mb-2">Verification Pending</h3>
+                <p className="text-earth-600 text-sm font-medium">We're reviewing your store details. This usually takes 24-48 hours. We'll notify you once approved.</p>
+              </div>
+            ) : (
+              <div className="space-y-6 animate-fade-in">
+                <div className="mb-2">
+                  <h3 className="font-display font-black text-2xl text-earth-900">Verify your Store</h3>
+                  <p className="text-earth-500 text-sm font-medium">Submit your business details for verification.</p>
+                </div>
+
+                {currentUser.kycStatus === 'rejected' && (
+                  <div className="bg-red-50 p-4 rounded-2xl border border-red-100 flex gap-3 items-center">
+                    <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+                    <p className="text-xs text-red-600 font-bold">Your previous submission was rejected. Please update your details and re-submit.</p>
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <div className="border-b border-earth-100 pb-2">
+                    <label className="text-xs text-earth-400 font-medium block mb-1 uppercase tracking-widest">Store Name *</label>
+                    <input
+                      type="text"
+                      value={storeName}
+                      onChange={(e) => setStoreName(e.target.value)}
+                      className="w-full text-base font-black text-earth-900 outline-none bg-transparent"
+                      placeholder="My Awesome Thrift Store"
+                    />
+                  </div>
+
+                  <div className="border-b border-earth-100 pb-2">
+                    <label className="text-xs text-earth-400 font-medium block mb-1 uppercase tracking-widest">Store Address *</label>
+                    <textarea
+                      value={storeAddress}
+                      onChange={(e) => setStoreAddress(e.target.value)}
+                      rows={3}
+                      className="w-full text-base font-black text-earth-900 outline-none bg-transparent resize-none"
+                      placeholder="Full physical address"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs text-earth-400 font-medium block mb-1 uppercase tracking-widest">Business Type *</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {['Individual', 'Registered Business'].map(type => (
+                        <button
+                          key={type}
+                          onClick={() => setBusinessType(type)}
+                          className={`py-3 rounded-xl text-xs font-black border-2 transition-all ${
+                            businessType === type 
+                            ? 'bg-earth-900 text-white border-earth-900 shadow-md' 
+                            : 'bg-white text-earth-400 border-earth-100'
+                          }`}
+                        >
+                          {type}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-b border-earth-100 pb-2">
+                    <label className="text-xs text-earth-400 font-medium block mb-1 uppercase tracking-widest">GST Number (Optional)</label>
+                    <input
+                      type="text"
+                      value={gstNumber}
+                      onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
+                      className="w-full text-base font-black text-earth-900 outline-none bg-transparent"
+                      placeholder="GSTIN"
+                    />
+                  </div>
+
+                  <div className="border-b border-earth-100 pb-2">
+                    <label className="text-xs text-earth-400 font-medium block mb-1 uppercase tracking-widest">PAN Number *</label>
+                    <input
+                      type="text"
+                      value={panNumber}
+                      onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
+                      className="w-full text-base font-black text-earth-900 outline-none bg-transparent"
+                      placeholder="Permanent Account Number"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-6">
+                  <button
+                    onClick={handleSubmitVerification}
+                    disabled={isSaving || !storeName || !storeAddress || !panNumber}
+                    className="w-full py-4 bg-pop-cyan text-earth-900 font-black rounded-full active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit for Verification'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-fade-in">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-sm p-8 shadow-2xl animate-scale-in">
-            <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-6">
-              <ShieldAlert className="w-8 h-8 text-red-500" />
-            </div>
-            <h3 className="text-2xl font-display font-black text-earth-900 mb-2">Delete Account?</h3>
-            <p className="text-earth-500 font-medium mb-8 leading-relaxed">
-              This action is permanent and cannot be undone. All your posts, orders, and profile data will be removed.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => !isDeleting && setShowDeleteConfirm(false)}
-                className="flex-1 py-4 bg-earth-100 text-earth-900 font-bold rounded-2xl hover:bg-earth-200 transition-colors"
-                disabled={isDeleting}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="flex-1 py-4 bg-red-500 text-white font-bold rounded-2xl hover:bg-red-600 shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2"
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  'Delete'
-                )}
-              </button>
-            </div>
-          </div>
+      {/* Bottom Save Button (only for non-verification tabs) */}
+      {activeTab !== 'verification' && (
+        <div className="px-6 py-8 mt-auto pb-12 bg-white/80 backdrop-blur-md sticky bottom-0 border-t border-earth-50">
+          <button
+            onClick={handleSave}
+            disabled={isSaving || !isBioValid}
+            className="w-full py-4 bg-black text-white font-bold rounded-full active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100"
+          >
+            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save'}
+          </button>
         </div>
       )}
-
-      {/* Bottom Save Button */}
-      <div className="px-6 py-8 mt-auto pb-12 bg-white/80 backdrop-blur-md sticky bottom-0 border-t border-earth-50">
-        <button
-          onClick={handleSave}
-          disabled={isSaving || !isBioValid}
-          className="w-full py-4 bg-black text-white font-bold rounded-full active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:active:scale-100"
-        >
-          {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save'}
-        </button>
-      </div>
     </div>
   );
 };

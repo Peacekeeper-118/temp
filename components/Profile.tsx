@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { User, Post } from '../types';
-import { Settings, Grid, BarChart2, Truck, Share2, Bookmark, MapPin, Package, FileText } from 'lucide-react';
+import { Settings, Grid, BarChart2, Truck, Share2, Bookmark, MapPin, Package, FileText, BadgeCheck } from 'lucide-react';
 import { NeoStar } from './NeoIcons';
 
 interface ProfileProps {
@@ -54,7 +54,12 @@ export const Profile: React.FC<ProfileProps> = ({ user, posts, savedPosts = [], 
                   </div>
               </div>
               
-              {user.displayName && <h2 className="font-display font-black text-xl sm:text-2xl text-earth-900 mb-1">{user.displayName}</h2>}
+              {user.displayName && (
+                <div className="flex items-center justify-center gap-1.5 mb-1">
+                  <h2 className="font-display font-black text-xl sm:text-2xl text-earth-900">{user.displayName}</h2>
+                  {user.isVerified && <BadgeCheck className="w-5 h-5 text-pop-cyan fill-earth-900" aria-label="Verified Store" />}
+                </div>
+              )}
               <p className="text-earth-400 text-xs sm:text-sm font-medium mb-1">@{user.username || 'user'}</p>
               <p className="text-earth-500 text-xs sm:text-sm font-bold mb-4">{user.bio || 'No bio yet.'}</p>
               

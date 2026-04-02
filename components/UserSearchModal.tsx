@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { X, Search, User as UserIcon } from 'lucide-react';
+import { X, Search, User as UserIcon, BadgeCheck } from 'lucide-react';
 import { User } from '../types';
 
 interface UserSearchModalProps {
@@ -67,8 +67,11 @@ export const UserSearchModal: React.FC<UserSearchModalProps> = ({ isOpen, onClos
                       <div className="w-12 h-12 rounded-full p-[2px] bg-earth-100">
                         <img src={user.avatarUrl} className="w-full h-full rounded-full object-cover" alt={user.username} />
                       </div>
-                      <div>
-                          <h4 className="font-bold text-earth-900 text-sm">{user.username}</h4>
+                      <div className="flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="font-bold text-earth-900 text-sm">{user.username}</h4>
+                            {user.isVerified && <BadgeCheck className="w-3.5 h-3.5 text-pop-cyan fill-earth-900" aria-label="Verified Store" />}
+                          </div>
                           <p className="text-xs text-earth-500 font-medium">{user.displayName || user.username}</p>
                       </div>
                   </div>
